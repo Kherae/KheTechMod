@@ -1,0 +1,72 @@
+//this stuff is..potentially heavy processing wise? not sure I want to use it.
+//
+//    public static MutableCharacterStatsAPI getBlankCharStats(){
+//        return Global.getFactory().createPerson().getStats();
+//    }
+//
+//	public static MutableShipStatsAPI getBlankShipStats(){
+//        return getBlankShipStats("dem_drone","dem_drone");
+//    }
+//	public static MutableShipStatsAPI getBlankShipStats(String hullID, String variantID){
+//		return Global.getFactory().createFleetMember(
+//                FleetMemberType.SHIP,
+//                Global.getSettings().createEmptyVariant(
+//                        variantID,
+//                        Global.getSettings().getHullSpec(hullID)
+//                )
+//        ).getStats();
+//	}
+//
+//    public static void cheeseCopyCostModsStub(DynamicStatsAPI oldStats, MutableShipStatsAPI newStats){
+//        for(String costString : ALLCOSTMODSTRINGS){
+//            StatBonus oldStatsCopy = oldStats.getMod(costString).createCopy();
+//            newStats.getDynamic().getMod(costString).applyMods(oldStatsCopy);
+//        }
+//    }
+//    public static void cheeseCopyCostModsStub(DynamicStatsAPI oldStats, MutableCharacterStatsAPI newStats){
+//        for(String costString : ALLCOSTMODSTRINGS){
+//            StatBonus oldStatsCopy = oldStats.getMod(costString).createCopy();
+//            newStats.getDynamic().getMod(costString).applyMods(oldStatsCopy);
+//        }
+//    }
+//    public static MutableCharacterStatsAPI cheeseCopyCostMods(PersonAPI person){
+//        MutableCharacterStatsAPI newStats = getBlankCharStats();
+//        cheeseCopyCostModsStub(person.getStats().getDynamic(),newStats);
+//        return newStats;
+//    }
+//    public static MutableShipStatsAPI cheeseCopyCostMods(ShipAPI ship){
+//        MutableShipStatsAPI newStats = getBlankShipStats();
+//        cheeseCopyCostModsStub(ship.getMutableStats().getDynamic(),newStats);
+//        return newStats;
+//    }
+
+
+//    public static List <WeaponAPI.WeaponType> ALLCOSTMODTYPES=Arrays.asList(WeaponAPI.WeaponType.BALLISTIC, WeaponAPI.WeaponType.ENERGY, WeaponAPI.WeaponType.MISSILE);
+//    public static List <String> ALLCOSTMODSTRINGS=Arrays.asList(
+//        Stats.LARGE_BEAM_MOD,Stats.LARGE_BALLISTIC_MOD,Stats.LARGE_ENERGY_MOD,Stats.LARGE_MISSILE_MOD,Stats.LARGE_PD_MOD,
+//        Stats.MEDIUM_BEAM_MOD,Stats.MEDIUM_BALLISTIC_MOD,Stats.MEDIUM_ENERGY_MOD,Stats.MEDIUM_MISSILE_MOD,Stats.MEDIUM_PD_MOD,
+//        Stats.SMALL_BEAM_MOD,Stats.SMALL_BALLISTIC_MOD,Stats.SMALL_ENERGY_MOD,Stats.SMALL_MISSILE_MOD,Stats.SMALL_PD_MOD
+//    );
+
+
+    //not presently using this for anything. the list method is just better.
+//    public static float processStack(StatBonus statShip,StatBonus statPerson, boolean excludeZero, List<String> excludeIDs, float base){
+//        float stackFlat=
+//            getStack(statShip.getFlatBonuses(),false,false, excludeZero, excludeIDs)+
+//            getStack(statPerson.getFlatBonuses(),false,false, excludeZero, excludeIDs)
+//        ;
+//
+//        float stackPercent=
+//            getStack(statShip.getPercentBonuses(),false,true, excludeZero, excludeIDs)+
+//            getStack(statPerson.getPercentBonuses(),false,true, excludeZero, excludeIDs)
+//        ;
+//
+//        float stackMult=
+//            getStack(statShip.getMultBonuses(),true,false, excludeZero, excludeIDs)*
+//            getStack(statPerson.getMultBonuses(),true,false, excludeZero, excludeIDs)
+//        ;
+//        float numVal = ((base * (1f + stackPercent)) + stackFlat) * stackMult;
+//        log.info("process stack: b:"+base+" f:"+stackFlat+" m:"+stackMult+" eq:"+ numVal);
+//
+//        return numVal;
+//    }

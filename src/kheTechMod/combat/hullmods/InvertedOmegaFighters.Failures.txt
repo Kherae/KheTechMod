@@ -1,0 +1,120 @@
+
+//import com.fs.starfarer.api.combat.ShipVariantAPI;
+//import com.fs.starfarer.api.impl.campaign.ids.HullMods;
+
+//import com.fs.starfarer.api.Global;
+//import com.fs.starfarer.api.characters.PersonAPI;
+
+//import com.fs.starfarer.api.combat.MutableShipStatsAPI;
+
+
+    //doesnt work. copied to ALL ships. nvm that it's supposed to be instanced...
+//    private PersonAPI fighterCaptain;//=Global.getFactory().createPerson();
+//    private PersonAPI oldCaptain;
+
+
+    //captain null
+//    @Override
+//    public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
+//        fighterCaptain=KheUtilities.clonePersonForFighter(ship.getCaptain());
+//    }
+
+
+applytofighters
+
+//        fighterCaptain=KheUtilities.clonePersonForFighter(ship.getCaptain());
+//        if(fighterCaptain!=null) {
+//            fighter.setCaptain(fighterCaptain);
+//            log.info("invertedomegafighters captain set");
+//        }
+
+
+
+//    cannot do this safely sadly.
+//    @Override
+//    public void advanceInCombat(ShipAPI ship, float amount) {
+//        PersonAPI currentCaptain=ship.getCaptain();
+// //this implementation is WAY too laggy due to the comparisons on the player. need a smarter way. maybe person.getid?
+// //        if (!currentCaptain.equals(oldCaptain)){
+//        if ((oldCaptain==null) || (!(currentCaptain.getId().equals(oldCaptain.getId())))){
+//            oldCaptain=currentCaptain;
+//            KheUtilities.overridePersonByReference(fighterCaptain,oldCaptain);
+//        }
+//    }
+
+
+reautomate
+
+//        if(thisVariant.getPermaMods().contains("RetrofittedBridge")) {
+//            thisVariant.removePermaMod("RetrofittedBridge");
+//        }
+//        if(thisVariant.getHullMods().contains("RetrofittedBridge")) {
+//            thisVariant.removeMod("RetrofittedBridge");
+//        }
+//        if((thisVariant.getSuppressedMods().contains(HullMods.AUTOMATED))) {
+//            thisVariant.removeSuppressedMod(HullMods.AUTOMATED);
+//        }
+//        if(!(thisVariant.getPermaMods().contains(HullMods.AUTOMATED))) {
+//            thisVariant.addPermaMod(HullMods.AUTOMATED);
+//        }
+// doesnt actually work on rats interfaced officers
+//        PersonAPI currentCaptain=ship.getCaptain();
+//        if ((currentCaptain!=null)&&((!currentCaptain.isAICore()))){
+//            ship.setCaptain(null);
+//        }
+
+decided against
+
+
+//    public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
+//        reautomate(ship);
+//    }
+
+//
+//    private static void reautomate(ShipAPI ship){
+//        ShipVariantAPI thisVariant=ship.getVariant();
+//        removeMod(thisVariant,"RetrofittedBridge");
+//        removeMod(thisVariant,HullMods.NEURAL_INTEGRATOR);
+//        removeMod(thisVariant,HullMods.NEURAL_INTERFACE);
+//        addMod(thisVariant,HullMods.AUTOMATED);
+//    }
+//
+//    public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
+//        if (index == 0){return "This ship actively rejects most attempts to insert a human captain.";}
+//        return "PIGEON";
+//    }
+
+
+
+
+    private static void addMod(ShipVariantAPI variant, String mod) {
+        variant.removeSuppressedMod(mod);
+        if (variant.getHullSpec().isBuiltInMod(mod)) {
+            variant.addMod(mod);
+        } else {
+            variant.addPermaMod(mod);
+        }
+    }
+
+    private static void removeMod(ShipVariantAPI variant, String mod) {
+        if (variant.getHullSpec().isBuiltInMod(mod)) {
+            variant.addSuppressedMod(mod);
+        }
+        variant.removePermaMod(mod);
+    }
+//
+//    private static void addMod(ShipVariantAPI variant, String mod) {
+//        variant.removeSuppressedMod(mod);
+//        if (variant.getHullSpec().isBuiltInMod(mod)) {
+//            variant.addMod(mod);
+//        } else {
+//            variant.addPermaMod(mod);
+//        }
+//    }
+//
+//    private static void removeMod(ShipVariantAPI variant, String mod) {
+//        if (variant.getHullSpec().isBuiltInMod(mod)) {
+//            variant.addSuppressedMod(mod);
+//        }
+//        variant.removePermaMod(mod);
+//    }
