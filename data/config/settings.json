@@ -1,0 +1,5 @@
+{
+	"plugins":{
+		 "KheTimeCleanup":"kheTechMod.combat.plugins.KheTimeCleanup"
+	}
+}
