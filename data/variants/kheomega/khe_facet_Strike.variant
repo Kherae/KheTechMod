@@ -1,0 +1,49 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 0,
+    "fluxVents": 0,
+    "goalVariant": true,
+    "hullId": "khe_facet",
+    "hullMods": [
+        "eccm",
+        "targetingunit",
+        "insulatedengine",
+		"armoredweapons"
+    ],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "khe_facet_Strike",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 000": "cryoblaster"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "riftlance",
+                "WS 002": "riftlance"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "resonatormrm",
+                "WS 004": "resonatormrm"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 005": "amsrm",
+                "WS 006": "amsrm",
+                "WS 007": "amsrm",
+                "WS 008": "amsrm"
+            }
+        }
+    ]
+}

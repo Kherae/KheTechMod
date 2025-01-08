@@ -1,0 +1,52 @@
+{
+    "displayName": "Assaulter",
+    "fluxCapacitors": 0,
+    "fluxVents": 4,
+    "goalVariant": true,
+    "hullId": "khe_tesseract",
+    "hullMods": [],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "khe_tesseract_Assaulter",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+				"WS 009": "vpdriver"
+			}
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 007": "disintegrator",
+                "WS 010": "disintegrator",
+				"WS 006": "disintegrator"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS 008": "cryoblaster"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "shockrepeater",
+                "WS 002": "shockrepeater",
+                "WS 003": "shockrepeater",
+                "WS 004": "shockrepeater"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 000": "riftlance",
+                "WS 005": "riftlance"
+            }
+        }
+    ]
+}
