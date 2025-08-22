@@ -16,7 +16,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 	public final float RANGEBONUS = 1000f;
 	public final float NOOPPENALTY = 1f;
 	public final float FLUXPENALTYMULT = 1f;
-	public final float OVERLOADTHRESHOLD=1f;
+	public final float OVERLOADTHRESHOLD=1.1f;
 	public static final String ARTILLERYADDBLOCKREASON="Addition would cause OP to exceed maximum.";
 
 	public static void valueMath(
@@ -96,7 +96,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		}
 		if (index==2){return Math.floor(rangebonus)+"";}
 		if (index==3){return Math.floor(costreduction)+"";}
-		if(((!(overloadthreshold<1f))&&index==4)||(index==5)){
+		if(((!(overloadthreshold<=1f))&&index==4)||(index==5)){
 			return "Flux Cost: "+nooppenalty+"% per Base OP. Fluxless: (1-((BaseOP*"+fluxpenaltymult+")/100))x, per weapon";
 		}
 		if (index==4){return Math.round(overloadthreshold*100f)+"%";}

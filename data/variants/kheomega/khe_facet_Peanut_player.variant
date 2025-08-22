@@ -3,7 +3,7 @@
     "fluxCapacitors": 0,
     "fluxVents": 0,
     "goalVariant": true,
-    "hullId": "khe_facet",
+    "hullId": "khe_facet_player",
     "hullMods": [
         "pointdefenseai",
         "heavyarmor",
@@ -11,7 +11,7 @@
     ],
     "permaMods": [],
     "sMods": [],
-    "variantId": "khe_facet_Peanut",
+    "variantId": "khe_facet_Peanut_player",
     "weaponGroups": [
         {
             "autofire": true,

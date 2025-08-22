@@ -1,22 +1,23 @@
 {
-    "displayName": "Bulwark",
+    "displayName": "Strike",
     "fluxCapacitors": 0,
     "fluxVents": 0,
     "goalVariant": true,
-    "hullId": "khe_facet",
+    "hullId": "khe_facet_player",
     "hullMods": [
-        "pointdefenseai",
-        "heavyarmor",
-        "reinforcedhull"
+        "eccm",
+        "targetingunit",
+        "insulatedengine",
+		"armoredweapons"
     ],
     "permaMods": [],
     "sMods": [],
-    "variantId": "khe_facet_Peanut",
+    "variantId": "khe_facet_Strike_player",
     "weaponGroups": [
         {
             "autofire": true,
             "mode": "LINKED",
-            "weapons": {"WS 000": "cryoflux"}
+            "weapons": {"WS 000": "cryoblaster"}
         },
         {
             "autofire": true,
@@ -30,18 +31,18 @@
             "autofire": true,
             "mode": "LINKED",
             "weapons": {
-                "WS 003": "riftbeam",
-                "WS 004": "riftbeam"
+                "WS 003": "resonatormrm",
+                "WS 004": "resonatormrm"
             }
         },
         {
             "autofire": true,
-            "mode": "LINKED",
+            "mode": "ALTERNATING",
             "weapons": {
-                "WS 005": "shockrepeater",
-                "WS 006": "shockrepeater",
-                "WS 007": "shockrepeater",
-                "WS 008": "shockrepeater"
+                "WS 005": "amsrm",
+                "WS 006": "amsrm",
+                "WS 007": "amsrm",
+                "WS 008": "amsrm"
             }
         }
     ]

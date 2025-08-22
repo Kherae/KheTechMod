@@ -5,27 +5,27 @@ import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipCommand;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import org.apache.log4j.Logger;
 
 public class ShieldHack extends BaseHullMod {
 	public static final float SHIELDUNFOLDBOOST=2f;
 	public static final float SHIELDTURNBOOST =2f;
-
 	public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
 		stats.getShieldUnfoldRateMult().modifyMult(id,SHIELDUNFOLDBOOST);
 		stats.getShieldTurnRateMult().modifyMult(id, SHIELDTURNBOOST);
 	}
 		
 	public String getDescriptionParam(int index, HullSize hullSize) {
-		if(index==0){KheUtilities.lazyKheGetMultString(SHIELDUNFOLDBOOST);}
-		if(index==1){KheUtilities.lazyKheGetMultString(SHIELDTURNBOOST);}
-		return null;
+		if(index==0){return KheUtilities.lazyKheGetMultString(SHIELDUNFOLDBOOST);}
+		if(index==1){return KheUtilities.lazyKheGetMultString(SHIELDTURNBOOST);}
+		return "Fart: "+index;
 	}
-	
+
 	@Override
 	public void advanceInCombat(ShipAPI ship, float amount) {
 		super.advanceInCombat(ship, amount);
 		if (!ship.isAlive()) return;
-
 		ship.blockCommandForOneFrame(ShipCommand.TOGGLE_SHIELD_OR_PHASE_CLOAK);
 		//ship.blockCommandForOneFrame(ShipCommand.VENT_FLUX);
 

@@ -1,13 +1,9 @@
 {
     "bounds": [
-        24,
-        1,
-        -9,
-        12,
-        -13,
-        -10,
-        8,
-        -9
+        24,1,
+        -9,12,
+        -13,-10,
+        8,-9
     ],
     "builtInMods": [
         "automated",
@@ -18,8 +14,7 @@
 		"no_weapon_flux"
     ],
     "center": [
-        16,
-        22
+        16,22
     ],
     "collisionRadius": 28,
     "coversColor": "",
@@ -29,8 +24,7 @@
             "contrailSize": 64,
             "length": 32,
             "location": [
-                -9,
-                7
+                -9,7
             ],
             "style": "OMEGA",
             "width": 10
@@ -40,8 +34,7 @@
             "contrailSize": 64,
             "length": 32,
             "location": [
-                -10,
-                -7
+                -10,-7
             ],
             "style": "OMEGA",
             "width": 10
@@ -52,8 +45,7 @@
     "hullName": "Inverted Aspect",
     "hullSize": "FIGHTER",
     "shieldCenter": [
-        0,
-        0
+        0,0
     ],
     "shieldRadius": 28,
     "spriteName": "graphics/ships/kheomega/iota.png",
@@ -64,8 +56,7 @@
         "arc": 360,
         "id": "WS 000",
         "locations": [
-            0,
-            0
+            0,0
         ],
         "mount": "TURRET",
         "size": "SMALL",

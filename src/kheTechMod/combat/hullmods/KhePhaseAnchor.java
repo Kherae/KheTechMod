@@ -1,6 +1,8 @@
 package kheTechMod.combat.hullmods;
 
 import java.awt.Color;
+
+//import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BaseHullMod;
@@ -16,34 +18,52 @@ import com.fs.starfarer.api.util.FaderUtil;
 import com.fs.starfarer.api.util.Misc;
 
 public class KhePhaseAnchor extends BaseHullMod {
-	private static final float CR_LOSS_MULT_FOR_EMERGENCY_DIVE = 1f;
+	//private static final Logger log = Logger.getLogger(KhePhaseAnchor.class);
+	static String id = "khe_phase_anchor";
+
+	private static final float CR_LOSS_MULT_FOR_EMERGENCY_DIVE = 2f;
+	public final float CLOAK_UPKEEP_PENALTY=2f;
+
+//	public static void reportTriggered(ShipAPI ship,float value){
+//		ship.getFleetMember().getFleetData().
+//
+//	}
+
+    static void setNewHealth(ShipAPI ship, float amount){
+        ship.setHitpoints(amount);
+        ship.setLowestHullLevelReached(amount);//ss v 0.98+ only function.
+        //log.info("recorded hp: "+amount);
+    }
 
 	public static class KhePhaseAnchorScript implements AdvanceableListener, HullDamageAboutToBeTakenListener {
-		public final ShipAPI ship;
 		public boolean emergencyDive = false;
+		public boolean playedSound=false;
 		public float diveProgress = 0f;
+        public float recordCR=1f;
 		public final FaderUtil diveFader = new FaderUtil(1f, 1f);
+
+		public final ShipAPI ship;
 		public KhePhaseAnchorScript(ShipAPI ship) {
 			this.ship = ship;
 		}
 		
 		public boolean notifyAboutToTakeHullDamage(Object param, ShipAPI ship, Vector2f point, float damageAmount) {
-			
 			if (!emergencyDive) {
 				float depCost = 0f;
 				if (ship.getFleetMember() != null) {
 					depCost = ship.getFleetMember().getDeployCost();
 				}
 				float crLoss = CR_LOSS_MULT_FOR_EMERGENCY_DIVE * depCost;
-				boolean canDive = ship.getCurrentCR() >= crLoss;
+				float currentCR = ship.getCurrentCR();
+				float newCR=currentCR-crLoss;
+				boolean canDive = newCR>=0f;
 
 				float hull = ship.getHitpoints();
 				if (damageAmount >= hull && canDive) {
-					ship.setHitpoints(1f);
-
-					if (ship.getFleetMember() != null) {
-						ship.getFleetMember().getRepairTracker().applyCREvent(-crLoss, "Emergency phase dive");
-					}
+					//if (ship.getFleetMember() != null) {
+                    recordCR=newCR*ship.getMaxHitpoints();
+                    setNewHealth(ship,recordCR);
+					//}
 					emergencyDive = true;
 					if (!ship.isPhased()) {
 						Global.getSoundPlayer().playSound("system_phase_cloak_activate", 1f, 1f, ship.getLocation(), ship.getVelocity());
@@ -55,8 +75,8 @@ public class KhePhaseAnchor extends BaseHullMod {
         }
 
 		public void advance(float amount) {
-			String id = "phase_anchor_modifier";
 			if (emergencyDive) {
+                boolean lastForceFlag=false;
 				Color c = ship.getPhaseCloak().getSpecAPI().getEffectColor2();
 				c = Misc.setAlpha(c, 255);
 				c = Misc.interpolateColor(c, Color.white, 0.5f);
@@ -65,9 +85,12 @@ public class KhePhaseAnchor extends BaseHullMod {
 					if (ship.getFluxTracker().showFloaty()) {
 						float timeMult = ship.getMutableStats().getTimeMult().getModifiedValue();
 						Global.getCombatEngine().addFloatingTextAlways(ship.getLocation(),
-								"Emergency dive!",
-								NeuralLinkScript.getFloatySize(ship), c, ship, 16f * timeMult, 3.2f/timeMult, 1f/timeMult, 0f, 0f,
-								1f);
+							"Emergency dive!",
+							NeuralLinkScript.getFloatySize(ship), c, ship,
+							16f * timeMult, 3.2f/timeMult, 1f/timeMult, 0f, 0f,
+							1f
+						);
+                        setNewHealth(ship,recordCR);
 					}
 				}
 				
@@ -81,7 +104,8 @@ public class KhePhaseAnchor extends BaseHullMod {
 				ship.getMutableStats().getHullDamageTakenMult().modifyMult(id, 0f);
 				
 				if (diveProgress >= 1f) {
-					if (diveFader.isIdle()) {
+					if ((!playedSound)&&(diveFader.isIdle())) {
+						playedSound=true;
 						Global.getSoundPlayer().playSound("phase_anchor_vanish", 1f, 1f, ship.getLocation(), ship.getVelocity());
 					}
 					diveFader.fadeOut();
@@ -93,16 +117,22 @@ public class KhePhaseAnchor extends BaseHullMod {
 					ship.setJitter(this, c, b, 20, r * (1f - b));
 					
 					if (diveFader.isFadedOut()) {
+                        setNewHealth(ship,recordCR);
 						ship.getLocation().set(0, -1000000f);
+                        lastForceFlag=true;
 					}
 				}
+                if(lastForceFlag){
+                    setNewHealth(ship,recordCR);
+                }
 			}
 		}
 	}
 
 	public String getDescriptionParam(int index, HullSize hullSize) {
 		if (index == 0) return "zero";
-		if (index == 1) return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE);
+		if (index == 1) return KheUtilities.lazyKheGetMultString(CLOAK_UPKEEP_PENALTY);
+		if (index == 2) return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE);
 		return null;
 	}
 
@@ -127,6 +157,7 @@ public class KhePhaseAnchor extends BaseHullMod {
 	@Override
 	public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
 		stats.getPhaseCloakActivationCostBonus().modifyMult(id, 0f);
+		stats.getPhaseCloakUpkeepCostBonus().modifyMult(id,CLOAK_UPKEEP_PENALTY);
 	}
 
 	@Override

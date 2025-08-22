@@ -17,7 +17,7 @@ public class WeaponReplexerUtil extends BaseHullMod {
 	public static final float OPMULT = 1f;
 	public static final float FLUXPENALTYMULT = 1f;
 	public static final float OVERLOADPENALTYMULT = 2f;
-	public static final String REPLEXERNOREMOVALSTRING="Removal would cause OP to exceed maximum.";
+	public static final String REPLEXERNOREMOVALSTRING="Removal would cause OP to exceed maximum by ";
 	public final static List <WeaponAPI.WeaponSize> VALIDSIZES = Arrays.asList(WeaponAPI.WeaponSize.LARGE, WeaponAPI.WeaponSize.MEDIUM, WeaponAPI.WeaponSize.SMALL);
 
 	@Override
@@ -41,16 +41,16 @@ public class WeaponReplexerUtil extends BaseHullMod {
 	public void valueMath(String id,ShipAPI ship, float opMult, float penaltyMult) {
 		MutableShipStatsAPI stats = ship.getMutableStats();
 		List<WeaponAPI> weaponList=ship.getAllWeapons();
-		float totalPercentage=0f;
+		float validWeaponModifier=0f;
 		float invalidWeaponModifier=1f;
 		for (WeaponAPI weaponEntry : weaponList) {
-			if(weaponMatches(weaponEntry,false)){
+			if(weaponMatches(weaponEntry,true)){
 				float baseOP=Math.max(0f,weaponEntry.getOriginalSpec().getOrdnancePointCost(null));
 				if(weaponEntry.getFluxCostToFire()<=0f){
 					invalidWeaponModifier*=(1f-(penaltyMult*baseOP*opMult)/100f);
 				}
 				else{
-					totalPercentage += baseOP*opMult;
+					validWeaponModifier += baseOP*opMult;
 				}
 			}
 		}
@@ -58,15 +58,15 @@ public class WeaponReplexerUtil extends BaseHullMod {
 			stats.getFluxDissipation().modifyMult(id,invalidWeaponModifier);
 		}
 		if(isBeamMode()){
-			KheUtilities.getFluxCostStatBonus(stats,true).modifyPercent(id, totalPercentage);
+			KheUtilities.getFluxCostStatBonus(stats,true).modifyPercent(id, validWeaponModifier);
 		}
 		else {
 			StatBonus buffer=KheUtilities.getFluxCostStatBonus(stats,getWeaponType());
 			if(buffer!=null){
-				buffer.modifyPercent(id, totalPercentage);
+				buffer.modifyPercent(id, validWeaponModifier);
 			}
 			else{
-				stats.getFluxDissipation().modifyMult(id,Math.max(1f-(totalPercentage/100f),0f));
+				stats.getFluxDissipation().modifyMult(id,Math.max(1f-(validWeaponModifier/100f),0f));
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public class WeaponReplexerUtil extends BaseHullMod {
 
 	public String addRemoveReasonResolve(ShipAPI ship, String myID, MarketAPI marketOrNull){
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return KheUtilities.RATSEXOSHIPNOREMOVALSTRING;}
-		if (preventRemoveOrAdd(ship,myID,marketOrNull)){return REPLEXERNOREMOVALSTRING;}
+		if (preventRemoveOrAdd(ship,myID,marketOrNull)){return REPLEXERNOREMOVALSTRING+wouldRemovalPutOverLimit(myID, ship)+".";}
 		return null;
 	}
 
@@ -108,14 +108,14 @@ public class WeaponReplexerUtil extends BaseHullMod {
 		if(ship==null){return false;}
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return true;}
 		if (!KheUtilities.shipHasHullmod(ship,myID)){return false;}
-        return wouldRemovalPutOverLimit(myID, ship);
+        return wouldRemovalPutOverLimit(myID, ship)>0;
     }
 
 	public boolean weaponMatches(WeaponAPI weaponEntry,boolean noBuiltIns){
 		return KheUtilities.weaponMatches(weaponEntry,noBuiltIns,isBeamMode(),false,getWeaponType(),KheUtilities.ALLSIZES);
     }
 
-	public boolean wouldRemovalPutOverLimit(String myID,ShipAPI ship){
+	public int wouldRemovalPutOverLimit(String myID,ShipAPI ship){
 		List<String>ignoreIDs=Collections.singletonList(myID);
 
 		PersonAPI captain=ship.getCaptain();
@@ -133,13 +133,15 @@ public class WeaponReplexerUtil extends BaseHullMod {
 
 		for (WeaponAPI weaponEntry : ship.getAllWeapons()) {
 			WeaponSpecAPI wOSpec = weaponEntry.getOriginalSpec();
-			if (weaponMatches(weaponEntry,false)) {
-				currentOPBuffer+=KheUtilities.specialOPCostCalc(wOSpec, captainStats, shipStats, ignoreIDs,null,false);
-			}
-			else{
-				currentOPBuffer+=wOSpec.getOrdnancePointCost(captainStats, shipStats);
-			}
+            if(!KheUtilities.weaponIsBuiltIn(weaponEntry)){
+                if (weaponMatches(weaponEntry,false)) {
+                    currentOPBuffer+=KheUtilities.specialOPCostCalc(wOSpec, captainStats, shipStats, ignoreIDs,null,false);
+                }
+                else{
+                    currentOPBuffer+=wOSpec.getOrdnancePointCost(captainStats, shipStats);
+                }
+            }
 		}
-		return currentOPBuffer > limit;
+		return (int) (currentOPBuffer - limit);
     }
 }

@@ -1,4 +1,4 @@
-package kheTechMod.api.imp.campaign;
+package kheTechMod.campaign.coreofficerplugins;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AICoreOfficerPlugin;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-@SuppressWarnings("unused")
 public class KheWarpedCoreOfficerPlugin extends BaseAICoreOfficerPluginImpl implements AICoreOfficerPlugin {
     public static float WARPED_OMEGA_MULT=9f;
     public PersonAPI createPerson(String aiCoreId, String factionId, Random random) {

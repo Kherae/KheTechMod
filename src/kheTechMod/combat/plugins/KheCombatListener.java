@@ -6,7 +6,11 @@ import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-//copied straight from Quality Captains, basically, as this part does the exact same thing; tracking whether the player has beaten an omega ship.
+
+import java.util.Iterator;
+import java.util.List;
+
+//functionality copied straight from Quality Captains, basically, as this part does the exact same thing; tracking whether the player has beaten an omega ship.
 // this is a requirement for the warped omega bounty. and I do it this way because...well...it's the same shit.
 @SuppressWarnings("unused")
 public class KheCombatListener implements FleetEventListener {
@@ -26,5 +30,17 @@ public class KheCombatListener implements FleetEventListener {
 				}
 			}
 		}
+//		List<CampaignFleetAPI> sideTwo = battle.getNonPlayerSide();
+//		List<CampaignFleetAPI> sideOne = battle.getPlayerSide();
+//		Iterator<CampaignFleetAPI> iterTwo = sideTwo.iterator();
+//		Iterator<CampaignFleetAPI> iterOne = sideOne.iterator();
+//		while (iterTwo.hasNext()){
+//			CampaignFleetAPI currentFleet = iterTwo.next();
+//			currentFleet.getFleetData()
+//			Object anchorList=currentFleet.getMemoryWithoutUpdate().get("$khe_phase_anchor_triggered");
+//			if(anchorList!=null){
+//
+//			}
+//		}
 	}
 }

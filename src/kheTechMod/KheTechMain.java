@@ -10,17 +10,6 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class KheTechMain extends BaseModPlugin {
-    @SuppressWarnings("EmptyMethod")
-    @Override
-    public void onApplicationLoad() throws Exception {
-        super.onApplicationLoad();
-    }
-
-    @SuppressWarnings("EmptyMethod")
-    @Override
-    public void onNewGame() {
-        super.onNewGame();
-    }
 
     @Override
     public void onGameLoad(boolean newGame) {
@@ -42,5 +31,4 @@ public class KheTechMain extends BaseModPlugin {
         Global.getSector().registerPlugin(new KheWarpedCoreCampaignPlugin());
     }
 
-    // You can add more methods from ModPlugin here. Press Control-O in IntelliJ to see options.
 }

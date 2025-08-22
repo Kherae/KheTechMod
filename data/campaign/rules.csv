@@ -1,0 +1,3 @@
+id,trigger,conditions,script,text,options,notes
+khe_warped_omega_bounty_start,khe_warped_omega_bounty_start,,KheWarpedOmegaBountyStartScript,,,
+khe_warped_omega_bounty_complete,khe_warped_omega_bounty_complete,,KheWarpedOmegaBountyCompleteScript,,,

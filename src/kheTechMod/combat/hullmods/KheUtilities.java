@@ -39,12 +39,17 @@ public class KheUtilities {
         ;
     }
 
+    //concurrent modification is bad.
     public static void removeDMods(ShipVariantAPI shipVar) {
+        List<String> buffer = new ArrayList<>(Collections.emptyList());
         for (String id : shipVar.getHullMods()) {
             HullModSpecAPI spec =  Global.getSettings().getHullModSpec(id);
             if(spec.hasTag(Tags.HULLMOD_DMOD)){
-                DModManager.removeDMod(shipVar, id);
+                buffer.add(id);
             }
+        }
+        for (String id:buffer){
+            DModManager.removeDMod(shipVar, id);
         }
         int dmods = DModManager.getNumDMods(shipVar);
         if (dmods <= 0) {
@@ -400,7 +405,9 @@ public class KheUtilities {
         }
     }
 
-
+    public static boolean weaponIsBuiltIn(WeaponAPI weaponEntry){
+        return (weaponEntry.getSlot().isBuiltIn()||weaponEntry.getSlot().isHidden());
+    }
     @SuppressWarnings("unused")
     public static boolean weaponMatches(WeaponAPI weaponEntry, boolean noBuiltIns, boolean isBeam, boolean isPD, WeaponAPI.WeaponType weaponType, WeaponAPI.WeaponSize weaponSize){
         return weaponMatches(weaponEntry,noBuiltIns,isBeam,isPD,Collections.singletonList(weaponType),Collections.singletonList(weaponSize));
@@ -416,7 +423,7 @@ public class KheUtilities {
     @SuppressWarnings("unused")
     public static boolean weaponMatches(WeaponAPI weaponEntry, boolean noBuiltIns, boolean isBeam, boolean isPD, List<WeaponAPI.WeaponType> weaponTypes, List<WeaponAPI.WeaponSize> weaponSizes){
         if (weaponEntry.isDecorative()||(weaponEntry.getType()==null)){return false;}
-        if (noBuiltIns && (weaponEntry.getSlot().isBuiltIn()||weaponEntry.getSlot().isHidden())) {return false;}
+        if (noBuiltIns && weaponIsBuiltIn(weaponEntry)) {return false;}
         if(isBeam&&weaponEntry.isBeam()){return true;}
         if(isPD){
             WeaponSpecAPI spec = weaponEntry.getSpec();
