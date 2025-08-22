@@ -1,5 +1,5 @@
 {
-    "masterVersionFile": "https://github.com/Kherae/KheTechMod/blob/main/KheTechMod_Version.version",
+    "masterVersionFile": "https://raw.githubusercontent.com/Kherae/KheTechMod/refs/heads/main/KheTechMod_Version.version",
     "modName": "Khe's Tech",
     "modVersion": {
         "major": 1,
