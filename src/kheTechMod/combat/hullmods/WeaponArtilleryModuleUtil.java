@@ -17,7 +17,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 	public final float NOOPPENALTY = 1f;
 	public final float FLUXPENALTYMULT = 1f;
 	public final float OVERLOADTHRESHOLD=1.1f;
-	public static final String ARTILLERYADDBLOCKREASON="Addition would cause OP to exceed maximum.";
+	public static final String ARTILLERYADDBLOCKREASON="Addition would cause OP to exceed maximum by ";
 
 	public static void valueMath(
 		String id,MutableShipStatsAPI stats,ShipAPI ship,
@@ -168,7 +168,9 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		MarketAPI marketOrNull
 	){
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return KheUtilities.RATSEXOSHIPNOREMOVALSTRING;}
-		if (preventRemoveOrAdd(ship,myID,costModifier,hullmodWeaponTypes,weaponSizes,beamMode,marketOrNull)){return ARTILLERYADDBLOCKREASON;}
+		if (preventRemoveOrAdd(ship,myID,costModifier,hullmodWeaponTypes,weaponSizes,beamMode,marketOrNull)){
+            return ARTILLERYADDBLOCKREASON+KheUtilities.wouldAdditionPutOverLimit(myID,ship,hullmodWeaponTypes,weaponSizes,beamMode,false,costModifier)+".";
+        }
 		return null;
 	}
 
@@ -180,7 +182,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		if(ship==null){return false;}
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return true;}
 		if (KheUtilities.shipHasHullmod(ship,myID)){return false;}
-		return KheUtilities.wouldAdditionPutOverLimit(myID,ship,hullmodWeaponTypes,weaponSizes,beamMode,false,costModifier);
+		return (KheUtilities.wouldAdditionPutOverLimit(myID,ship,hullmodWeaponTypes,weaponSizes,beamMode,false,costModifier)>0f);
 	}
 
 }

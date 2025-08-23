@@ -120,15 +120,16 @@ public class PhaseHack extends BaseHullMod {
 	public boolean canBeAddedOrRemovedNow(ShipAPI ship, MarketAPI marketOrNull, CampaignUIAPI.CoreUITradeMode mode) {
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return false;}
 		if(KheUtilities.shipHasHullmod(ship,myID)){return super.canBeAddedOrRemovedNow(ship,marketOrNull,mode);}
-		if(KheUtilities.wouldAdditionPutOverLimit(myID,ship,KheUtilities.ALLCOSTMODWEAPONTYPES,KheUtilities.ALLSIZES,false,false,OPPENALTY)){return false;}
+		if(KheUtilities.wouldAdditionPutOverLimit(myID,ship,KheUtilities.ALLCOSTMODWEAPONTYPES,KheUtilities.ALLSIZES,false,false,OPPENALTY)>0f){return false;}
 		return super.canBeAddedOrRemovedNow(ship,marketOrNull,mode);
 	}
 
 	@Override
 	public String getCanNotBeInstalledNowReason(ShipAPI ship, MarketAPI marketOrNull, CampaignUIAPI.CoreUITradeMode mode) {
 		if(KheUtilities.isThisRatsExoship(marketOrNull)){return KheUtilities.RATSEXOSHIPNOREMOVALSTRING;}
-		if(KheUtilities.wouldAdditionPutOverLimit(myID,ship,KheUtilities.ALLCOSTMODWEAPONTYPES,KheUtilities.ALLSIZES,false,false,OPPENALTY)){
-			return "Hullmod would cause OP to exceed maximum.";
+        float buffer=KheUtilities.wouldAdditionPutOverLimit(myID,ship,KheUtilities.ALLCOSTMODWEAPONTYPES,KheUtilities.ALLSIZES,false,false,OPPENALTY);
+		if(buffer>0f){
+			return "Hullmod would cause OP to exceed maximum by "+buffer+".";
 		}
 		return super.getCanNotBeInstalledNowReason(ship,marketOrNull,mode);
 	}

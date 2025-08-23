@@ -125,7 +125,7 @@ public class WeaponReplexerUtil extends BaseHullMod {
 		float currentOPBuffer=
 			ship.getVariant().getNumFluxVents()+
 			ship.getVariant().getNumFluxCapacitors()+
-			KheUtilities.getAllFighterOPCost(ship)+
+			KheUtilities.getNonBuiltInFighterOPCost(ship)+
 			KheUtilities.getHullModOPCost(ship)
 		;
 		float limit=ship.getHullSpec().getOrdnancePoints(captainStats);
