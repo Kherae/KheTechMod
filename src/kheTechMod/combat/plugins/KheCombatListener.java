@@ -7,40 +7,20 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 
-import java.util.Iterator;
-import java.util.List;
-
-//functionality copied straight from Quality Captains, basically, as this part does the exact same thing; tracking whether the player has beaten an omega ship.
-// this is a requirement for the warped omega bounty. and I do it this way because...well...it's the same shit.
+//same as Quality Captains' implementation; tracking whether the player has beaten an omega ship, the requirement for the warped omega bounty to show.
 @SuppressWarnings("unused")
 public class KheCombatListener implements FleetEventListener {
-	public static final String QC_DEFEATED_OMEGA = "$defeated_omega";
-	
 	@Override
-	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
-
-	}
+	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {}
 
 	@Override
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) {
 		if (primaryWinner.getFaction().equals(Global.getSector().getPlayerFaction())) {
 			for (CampaignFleetAPI loser : battle.getNonPlayerSide()) {
 				if (loser.getFaction().getId().equals(Factions.OMEGA)) {
-					Global.getSector().getMemoryWithoutUpdate().set(QC_DEFEATED_OMEGA, true);
+					Global.getSector().getMemoryWithoutUpdate().set("$defeated_omega", true);
 				}
 			}
 		}
-//		List<CampaignFleetAPI> sideTwo = battle.getNonPlayerSide();
-//		List<CampaignFleetAPI> sideOne = battle.getPlayerSide();
-//		Iterator<CampaignFleetAPI> iterTwo = sideTwo.iterator();
-//		Iterator<CampaignFleetAPI> iterOne = sideOne.iterator();
-//		while (iterTwo.hasNext()){
-//			CampaignFleetAPI currentFleet = iterTwo.next();
-//			currentFleet.getFleetData()
-//			Object anchorList=currentFleet.getMemoryWithoutUpdate().get("$khe_phase_anchor_triggered");
-//			if(anchorList!=null){
-//
-//			}
-//		}
 	}
 }

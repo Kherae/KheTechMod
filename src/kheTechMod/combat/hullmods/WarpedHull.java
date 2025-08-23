@@ -1,11 +1,8 @@
 package kheTechMod.combat.hullmods;
 
 import com.fs.starfarer.api.combat.*;
-//import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 
 public class WarpedHull extends BaseHullMod {
-    //public static final String RETROFITHULLMODID="RetrofittedBridge";
-    //HullMods.AUTOMATED
     public static final float captaincyMalus=2f;
     public static final float crewMalus=0f;
 
@@ -17,9 +14,6 @@ public class WarpedHull extends BaseHullMod {
 
     @Override
     public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-        //ShipVariantAPI shipVar = ship.getVariant();
-        //KheUtilities.removeMod(shipVar,RETROFITHULLMODID);
-        //KheUtilities.addMod(shipVar,HullMods.AUTOMATED);
         KheUtilities.removeDMods(ship.getVariant());
         if((ship.getCaptain()!=null)&&(!ship.getCaptain().isDefault())&&(!ship.getCaptain().isAICore())){
             ship.getMutableStats().getSensorProfile().modifyMult(id,captaincyMalus);

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+//there's one for player owned cores and one for the bounty cores, in case I need to adjust the cores that players get without touching the bounty fleet.
 public class KhePlayerWarpedCoreOfficerPlugin extends BaseAICoreOfficerPluginImpl implements AICoreOfficerPlugin {
     public static float WARPED_OMEGA_MULT=9f;
     public PersonAPI createPerson(String aiCoreId, String factionId, Random random) {

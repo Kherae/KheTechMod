@@ -24,11 +24,6 @@ public class KhePhaseAnchor extends BaseHullMod {
 	private static final float CR_LOSS_MULT_FOR_EMERGENCY_DIVE = 2f;
 	public final float CLOAK_UPKEEP_PENALTY=2f;
 
-//	public static void reportTriggered(ShipAPI ship,float value){
-//		ship.getFleetMember().getFleetData().
-//
-//	}
-
     static void setNewHealth(ShipAPI ship, float amount){
         ship.setHitpoints(amount);
         ship.setLowestHullLevelReached(amount);//ss v 0.98+ only function.
@@ -60,10 +55,8 @@ public class KhePhaseAnchor extends BaseHullMod {
 
 				float hull = ship.getHitpoints();
 				if (damageAmount >= hull && canDive) {
-					//if (ship.getFleetMember() != null) {
                     recordCR=newCR*ship.getMaxHitpoints();
                     setNewHealth(ship,recordCR);
-					//}
 					emergencyDive = true;
 					if (!ship.isPhased()) {
 						Global.getSoundPlayer().playSound("system_phase_cloak_activate", 1f, 1f, ship.getLocation(), ship.getVelocity());
