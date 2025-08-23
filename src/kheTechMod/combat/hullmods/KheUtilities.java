@@ -8,7 +8,6 @@ import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.impl.campaign.DModManager;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
-//import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSlotAPI;
@@ -57,21 +56,6 @@ public class KheUtilities {
         }
     }
 
-    //copied from retrofitted bridge. for the tesseracts...they are not allowed to be nonautomated.
-    public static void addMod(ShipVariantAPI variant, String mod) {
-        variant.removeSuppressedMod(mod);
-        if (variant.getHullSpec().isBuiltInMod(mod)) {
-            variant.addMod(mod);
-        } else {
-            variant.addPermaMod(mod);
-        }
-    }
-    public static void removeMod(ShipVariantAPI variant, String mod) {
-        if (variant.getHullSpec().isBuiltInMod(mod)) {
-            variant.addSuppressedMod(mod);
-        }
-        variant.removePermaMod(mod);
-    }
 
     public static float getStack(HashMap<String, MutableStat.StatMod> someMods, statCalcMode calcMode, boolean excludeZero, List<String> excludeIDs){
         float stack=0f;
@@ -94,7 +78,6 @@ public class KheUtilities {
         return stack;
     }
 
-
     public static float processStack(MutableStat stat, boolean excludeZero, List<String> excludeIDs){
         //because of THIS line, DO NOT MAKE A LIST VERSION.
         float base=stat.base;
@@ -115,6 +98,7 @@ public class KheUtilities {
             if(sPT!=0f){stackPercent+=sPT;}
             if(sMT!=1f){stackMult*=sMT;}
         }
+
         return ((base * (1f + stackPercent)) + stackFlat) * stackMult;
     }
 
@@ -149,10 +133,10 @@ public class KheUtilities {
         return ((int) ship.getMutableStats().getNumFighterBays().getModifiedValue()) > 0;
     }
 
-    public static float getAllFighterOPCost(ShipAPI ship){
+    public static float getNonBuiltInFighterOPCost(ShipAPI ship){
         float currentOPBuffer=0f;
         MutableShipStatsAPI shipStats = ship.getMutableStats();
-        for (String fighterID:getFighterWings(shipStats)){
+        for (String fighterID:getNonBuiltInFighterWings(shipStats)){
             currentOPBuffer+=getFighterOPCost(shipStats,fighterID);
         }
         return currentOPBuffer;
@@ -181,19 +165,12 @@ public class KheUtilities {
         MutableShipStatsAPI shipStats = ship.getMutableStats();
 
         for (WeaponAPI weaponEntry : ship.getAllWeapons()) {
-            if(!weaponMatches(weaponEntry,true,isBeam,isPD,weaponTypes,weaponSizes)){continue;}
-            float projectedOP=specialOPCostCalc(
-                weaponEntry.getSpec(),captainStats,shipStats,
-                Collections.singletonList(myID),dSCList,
-                false
-            );
-            float currentOP=weaponEntry.getOriginalSpec().getOrdnancePointCost(captainStats, shipStats);
-
-            if (weaponTypes.contains(weaponEntry.getType())) {
-                currentOPBuffer+=Math.max(0f,projectedOP);
+            if(weaponIsBuiltIn(weaponEntry)){continue;}
+            if (weaponMatches(weaponEntry,true,isBeam,isPD,weaponTypes,weaponSizes)) {
+                currentOPBuffer+=Math.max(0f,specialOPCostCalc(weaponEntry.getSpec(),captainStats,shipStats,null,dSCList,false));
             }
             else{
-                currentOPBuffer+=currentOP;
+                currentOPBuffer+=weaponEntry.getOriginalSpec().getOrdnancePointCost(captainStats, shipStats);
             }
         }
         return currentOPBuffer;
@@ -203,7 +180,7 @@ public class KheUtilities {
         return Global.getSettings().getFighterWingSpec(wingId).getOpCost(stats);
     }
 
-    public static boolean wouldAdditionPutOverLimit(
+    public static float wouldAdditionPutOverLimit(
         String myID, ShipAPI ship,
         List<WeaponAPI.WeaponType> weaponTypes, List<WeaponAPI.WeaponSize> weaponSizes,
         boolean isBeam,boolean isPD,float costModifier
@@ -215,19 +192,25 @@ public class KheUtilities {
         float currentOPBuffer=
             ship.getVariant().getNumFluxVents()+
             ship.getVariant().getNumFluxCapacitors()+
-            getAllFighterOPCost(ship)+
+            getNonBuiltInFighterOPCost(ship)+
             getHullModOPCost(ship)+
             getSumWeaponsCost(myID,costModifier,ship,weaponTypes,weaponSizes,captainStats,isBeam,isPD)
         ;
 
         float limit=ship.getHullSpec().getOrdnancePoints(captainStats);
-
-        return currentOPBuffer > limit;
+        return currentOPBuffer - limit;
     }
 
     public static List<String> getFighterWings(MutableShipStatsAPI stats) {
         if (stats.getVariant() != null) {
             return stats.getVariant().getFittedWings();
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<String> getNonBuiltInFighterWings(MutableShipStatsAPI stats) {
+        if (stats.getVariant() != null) {
+            return stats.getVariant().getNonBuiltInWings();
         }
         return new ArrayList<>();
     }
@@ -289,7 +272,7 @@ public class KheUtilities {
         return null;
     }
 
-    @SuppressWarnings("unused")//unused because it's an overload hack.
+    @SuppressWarnings("unused")//unused because it's an overload and I want options.
     public static MutableStat getFluxCostStatBonus(MutableShipStatsAPI stats, boolean beamMode){//beamMode boolean purely for overload purposes...
         return stats.getBeamWeaponFluxCostMult();
     }
@@ -437,13 +420,13 @@ public class KheUtilities {
     }
 
     public static float specialOPCostCalc(
-        WeaponSpecAPI weapSpec, MutableCharacterStatsAPI captainStats, MutableShipStatsAPI shipStats, List<String> myIDs,List<StatBonus>statBonusAppend,
+        WeaponSpecAPI weapSpec, MutableCharacterStatsAPI captainStats, MutableShipStatsAPI shipStats, List<String> excludeIDs,List<StatBonus>statBonusAppend,
         boolean returnNegative
     ){
         //can copy statbonus. cant copy mutable*statsapi (easily). and since they pass by reference...i'm stuck with this implementation.
         //if it werent for that, I could just copy, unmodify, and run getOrdnancePointCost.
         float baseOP=weapSpec.getOrdnancePointCost(null);
-        float procNum=processStack(getAllCostStatBonuses(weapSpec,captainStats,shipStats,statBonusAppend),false, myIDs,baseOP);
+        float procNum=processStack(getAllCostStatBonuses(weapSpec,captainStats,shipStats,statBonusAppend),false, excludeIDs,baseOP);
         if(!returnNegative){procNum=Math.max(0,procNum);}
         return procNum;
     }

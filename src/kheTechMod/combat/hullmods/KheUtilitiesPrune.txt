@@ -1,4 +1,4 @@
-//this stuff is..potentially heavy processing wise? not sure I want to use it.
+this stuff is..potentially heavy processing wise? not sure I want to use it.
 //
 //    public static MutableCharacterStatsAPI getBlankCharStats(){
 //        return Global.getFactory().createPerson().getStats();
@@ -69,4 +69,32 @@
 //        log.info("process stack: b:"+base+" f:"+stackFlat+" m:"+stackMult+" eq:"+ numVal);
 //
 //        return numVal;
+//    }
+
+//rem: alternative method used.
+//    //copied from retrofitted bridge. for the tesseracts...they are not allowed to be nonautomated.
+//    public static void addMod(ShipVariantAPI variant, String mod) {
+//        variant.removeSuppressedMod(mod);
+//        if (variant.getHullSpec().isBuiltInMod(mod)) {
+//            variant.addMod(mod);
+//        } else {
+//            variant.addPermaMod(mod);
+//        }
+//    }
+//    public static void removeMod(ShipVariantAPI variant, String mod) {
+//        if (variant.getHullSpec().isBuiltInMod(mod)) {
+//            variant.addSuppressedMod(mod);
+//        }
+//        variant.removePermaMod(mod);
+//    }
+
+
+    //built in fighters do not cost OP.
+//    public static float getAllFighterOPCost(ShipAPI ship){
+//        float currentOPBuffer=0f;
+//        MutableShipStatsAPI shipStats = ship.getMutableStats();
+//        for (String fighterID:getFighterWings(shipStats)){
+//            currentOPBuffer+=getFighterOPCost(shipStats,fighterID);
+//        }
+//        return currentOPBuffer;
 //    }
