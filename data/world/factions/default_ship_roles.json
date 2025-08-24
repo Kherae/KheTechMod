@@ -1,0 +1,12 @@
+{
+	"phaseLarge":{
+		"khe_tesseract_Assaulter"
+		"khe_tesseract_Disruptor",
+		"khe_tesseract_Lancer",
+		"khe_tesseract_Strike"
+	},
+	"combatMedium":{
+		"khe_facet_Strike",
+		"khe_facet_Peanut"
+	}
+}
