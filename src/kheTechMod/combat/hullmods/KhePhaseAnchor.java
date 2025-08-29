@@ -22,7 +22,8 @@ public class KhePhaseAnchor extends BaseHullMod {
 	static String id = "khe_phase_anchor";
 
 	private static final float CR_LOSS_MULT_FOR_EMERGENCY_DIVE = 2f;
-	public final float CLOAK_UPKEEP_PENALTY=2f;
+	private static final float CLOAK_ACTIVATION_MULT = 0.0f;
+	//public final float CLOAK_UPKEEP_PENALTY=2f;
 
     static void setNewHealth(ShipAPI ship, float amount){
         ship.setHitpoints(amount);
@@ -124,8 +125,8 @@ public class KhePhaseAnchor extends BaseHullMod {
 
 	public String getDescriptionParam(int index, HullSize hullSize) {
 		if (index == 0) return "zero";
-		if (index == 1) return KheUtilities.lazyKheGetMultString(CLOAK_UPKEEP_PENALTY);
-		if (index == 2) return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE);
+		if (index == 1) //return KheUtilities.lazyKheGetMultString(CLOAK_UPKEEP_PENALTY);
+		/*if (index == 2)*/ return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE);
 		return null;
 	}
 
@@ -149,8 +150,8 @@ public class KhePhaseAnchor extends BaseHullMod {
 
 	@Override
 	public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
-		stats.getPhaseCloakActivationCostBonus().modifyMult(id, 0f);
-		stats.getPhaseCloakUpkeepCostBonus().modifyMult(id,CLOAK_UPKEEP_PENALTY);
+		stats.getPhaseCloakActivationCostBonus().modifyMult(id, CLOAK_ACTIVATION_MULT);
+		//stats.getPhaseCloakUpkeepCostBonus().modifyMult(id,CLOAK_UPKEEP_PENALTY);
 	}
 
 	@Override

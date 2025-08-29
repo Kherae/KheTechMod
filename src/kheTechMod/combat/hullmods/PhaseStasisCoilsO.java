@@ -3,7 +3,7 @@ package kheTechMod.combat.hullmods;
 import com.fs.starfarer.api.combat.*;
 
 public class PhaseStasisCoilsO extends PhaseStasisCoilsUtil {
-    final static float upkeepModifier = 0.0f;
+    final static float upkeepModifier = 1.0f;
     final static boolean doTimeWarp=true;
     final static boolean clampTime=true;
     final static float FLUX_THRESHOLD_INCREASE_PERCENT=10000.0f;
