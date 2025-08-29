@@ -1,5 +1,5 @@
 {
-	id:"khewarpedomega", # ... or is it?
+	"id":"khewarpedomega", # ... or is it?
 	"displayName":"Warped Omega",
 	"displayNameWithArticle":"the Warped Omega",
 	"displayNameLong":"Warped Omega",
@@ -35,23 +35,23 @@
 	},
 	# ships the faction gets access to when importing S&W out-of-faction
 	"shipsWhenImporting":{
-		"tags":["omega"],
+		"tags":["omega","warpedomega"],
 		"hulls":[
 		],
 	},
 	"knownShips":{
-		"tags":["omega"],
+		"tags":["omega","warpedomega"],
 		"hulls":[
 		],
 	},
 	# listing ships here will make the faction mostly use them even if other hulls become available
 	"priorityShips":{
-		"tags":[],
+		"tags":["warpedomega"],
 		"hulls":[
 		],
 	},
 	"knownFighters":{
-		"tags":["omega"],
+		"tags":["omega","warpedomega"],
 		"fighters":[
 		],
 	},
@@ -61,12 +61,12 @@
 		],
 	},
 	"knownWeapons":{
-		"tags":["omega"],
+		"tags":["omega","warpedomega"],
 		"weapons":[
 		],
 	},
 	"priorityWeapons":{
-		"tags":[],
+		"tags":["warpedomega"],
 		"weapons":[
 		],
 	},
