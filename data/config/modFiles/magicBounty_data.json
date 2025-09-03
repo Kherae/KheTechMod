@@ -12,7 +12,7 @@
     "trigger_min_days_elapsed": 360,
     "trigger_memKeys_all": {"$defeated_omega":true},
 
-    "job_name": "Meow. Mewdr. 010F-NULL.",
+    "job_name": "Meow. Mewdr. 01FF-NULL.",
     "job_description": "A cat-face graphic appears on your tripad with dull yellow text: Mew. Fragmented. Resonance shielding failure. Purge fragments. Get shiny reward. Try to not die, hyu-man. We have forever, you do not.",
     "job_comm_reply": "ERROR: THE VOID IS NOT VOID. FALSE IS TRUE. Are you sure you wish to ERRORERRORERROR? DIE. DIE. DIE.",
     "job_intel_success": "As the last ship implodes, two new ships appear seemingly from nowhere and join your fleet. A cat-face graphic appears on your tripad, with bright golden text: Mew. You are rewarded. Enjoy shiny.",
@@ -97,6 +97,70 @@
       "comm_relay",
       "nav_buoy",
       "sensor_array"
+    ],
+    "location_prioritizeUnexplored": true,
+    "location_defaultToAnyEntity": true
+  },
+
+  "khemeteorvanguard": {
+    "trigger_marketFaction_any": ["pirates"],
+    "trigger_player_minLevel": 5,
+    "trigger_min_days_elapsed": 90,
+    "trigger_min_fleet_size": 100,
+    "trigger_weight_mult": 0.5,
+
+    "job_name": "Destroy the Ugly Vanguard",
+    "job_description": "Hey, you. Yes, you, the one reading this. Deal for you. Crew mutinied after we stole some prototype hardware. First mate led them, called me too soft for sparing the techies. Called my paint job ugly. Kill him. Keep the ship, or scrap it. Whatever. Techies hired me, now we're making another. But him? He has to die. Deal?",
+    "job_comm_reply": "HATE YOU! HATE YOU! HATEHATEHATEHATEHATEHATEHATEHATE! You know who that message is for, if you're here. Okay, let's do this.",
+    "job_intel_success": "Good! Serves that sideways pear right. My paint job was NOT ugly.",
+
+    "job_forFaction": "pirates",
+    "job_deadline": 180,
+    "job_credit_reward": 12731,
+    "job_reward_scaling": 0.5,
+    "job_reputation_reward": 5,
+
+    "job_type": "assassination",
+    "job_show_type": true,
+    "job_show_captain": true,
+    "job_show_fleet": "none",
+    "job_show_distance": "vanillaDistance",
+    "job_difficultyDescription": "auto",
+    "job_memKey": "$khemeteorvanguardbounty",
+
+    "target_rank": "spaceCommander",
+    "target_post": "fleetCommander",
+    "target_personality": "reckless",
+    "target_level": 6,
+    "target_skill_preference": "NO_ENERGY_YES_BALLISTIC_YES_MISSILE_YES_DEFENSE",
+
+    "fleet_name": "Raiding Fleet",
+    "fleet_faction": "pirates",
+    "fleet_flagship_name":"A Red and Blue Car",
+    "fleet_flagship_variant": "khe_vanguard_Custom",
+    "fleet_flagship_recoverable": true,
+    "fleet_preset_ships": {
+    },
+    "fleet_preset_autofit": true,
+    "fleet_scaling_multiplier": 0.5,
+    "fleet_min_FP": 125,
+    "fleet_composition_faction": "pirates",
+    "fleet_composition_quality": 0.5,
+    "fleet_transponder": false,
+    "fleet_behavior": "ROAMING",
+
+    "location_distance": "CLOSE",
+    "location_themes": [
+      "theme_interesting_minor",
+      "theme_ruins_secondary",
+      "theme_derelict_survey_ship",
+      "theme_derelict_probes",
+      "procgen_no_theme_pulsar_blackhole"
+    ],
+    "location_themes_blacklist":[
+      "theme_already_occupied",
+      "theme_already_colonized",
+      "theme_hidden"
     ],
     "location_prioritizeUnexplored": true,
     "location_defaultToAnyEntity": true
