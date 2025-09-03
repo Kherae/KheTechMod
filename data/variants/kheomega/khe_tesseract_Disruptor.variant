@@ -4,7 +4,7 @@
     "fluxVents": 5,
     "goalVariant": true,
     "hullId": "khe_tesseract",
-    "hullMods": [],
+    "hullMods": ["pointdefenseai","turretgyros"],
     "permaMods": [],
     "sMods": [],
     "variantId": "khe_tesseract_Disruptor",

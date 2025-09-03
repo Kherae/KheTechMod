@@ -7,7 +7,9 @@
     "hullMods": [
         "pointdefenseai",
         "heavyarmor",
-        "reinforcedhull"
+        "reinforcedhull",
+        "turretgyros",
+        "armoredweapons"
     ],
     "permaMods": [],
     "sMods": [],
