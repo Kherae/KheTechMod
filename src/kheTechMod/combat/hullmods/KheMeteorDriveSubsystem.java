@@ -14,8 +14,9 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 //    public final float DPPENALTYPERCENT=100;
 //    private final Logger log = Logger.getLogger(KheMeteorDriveSubsystem.class);
 
-    public final static float MASS_MULT=33f;
-    //100 was way, way too strong. oneshot a radiant, 90% of an onslaught. 10 is too weak, doesnt even touch armor. 33 is a nice good number.
+    public final static float MASS_MULT=13f;
+    //100 was way, way too strong. oneshot a radiant, 90% of an onslaught. 10 is too weak, doesnt even touch armor.
+    // 33 is a nice good number, but still too strong. oneshot an astral. 20 is big chunky..but...eh guess too much.
     public final static String myID = "KheMeteorDriveSubsystem";
 
     public static class KheMeteorDriveDeepSystem implements AdvanceableListener, HullDamageAboutToBeTakenListener {
