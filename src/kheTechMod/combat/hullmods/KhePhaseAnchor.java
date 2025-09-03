@@ -1,15 +1,15 @@
 package kheTechMod.combat.hullmods;
 
 import java.awt.Color;
+import java.util.List;
 
 //import org.apache.log4j.Logger;
+import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import org.lwjgl.util.vector.Vector2f;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.BaseHullMod;
-import com.fs.starfarer.api.combat.MutableShipStatsAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
-import com.fs.starfarer.api.combat.ShipCommand;
 import com.fs.starfarer.api.combat.ShipSystemAPI.SystemState;
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
 import com.fs.starfarer.api.combat.listeners.HullDamageAboutToBeTakenListener;
@@ -132,7 +132,7 @@ public class KhePhaseAnchor extends BaseHullMod {
 
 	@Override
 	public boolean isApplicableToShip(ShipAPI ship) {
-		if(!KheUtilities.isPhaseShip(ship,false)){return false;}
+		if(!KheUtilities.isPhaseShip(ship,true,false,false)){return false;}
 		if(!KheUtilities.isAutomated(ship)){return false;}
 		return super.isApplicableToShip(ship);
 	}
@@ -142,7 +142,7 @@ public class KhePhaseAnchor extends BaseHullMod {
 		if (!KheUtilities.isAutomated(ship)) {
 			return "Can only be installed on automated ships.";
 		}
-		if (!KheUtilities.isPhaseShip(ship,false)) {
+		if (!KheUtilities.isPhaseShip(ship,true,false,false)) {
 			return "Can only be installed on phase ships.";
 		}
 		return null;
@@ -164,5 +164,28 @@ public class KhePhaseAnchor extends BaseHullMod {
 		}
 		ship.addListener(new KhePhaseAnchorScript(ship));
 	}
+
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
+        Color bad = Misc.getNegativeHighlightColor();
+        Color good = Misc.getHighlightColor();
+       // Color mid = Misc.getTextColor();
+      //  Color darkBad = Misc.setAlpha(Misc.scaleColorOnly(bad, 0.4f), 175);
+//        Color verygood=Misc.getStoryOptionColor();
+//        Color verygood2=Misc.getStoryDarkColor();
+
+        if (ship == null || ship.getMutableStats() == null) return;
+        float opad = 10f;
+        tooltip.addSectionHeading("Stats", Alignment.MID, opad);
+        tooltip.addPara("Phase cloak activation cost: %s",opad,good,KheUtilities.lazyKheGetMultString(CLOAK_ACTIVATION_MULT,2));
+
+        tooltip.addSectionHeading("Emergency Dive", Alignment.MID, opad);
+        tooltip.addPara("Ship dives into phase space and retreats when it sustains critical damage. %s",opad,good,"No dive limits per battle.");
+        tooltip.addPara("Requires %s Deployment CR to trigger, and consumes that much.",opad,bad,KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE,2));
+        tooltip.addPara("Ship will restore hull roughly equal to %s. (Somewhat less, actually) -Shut up Kevin",opad,good,"the CR level after diving");
+
+
+    }
 }
 

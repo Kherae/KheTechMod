@@ -1,27 +1,29 @@
 package kheTechMod.combat.hullmods;
 
 import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
 public class PhaseStasisCoilsO extends PhaseStasisCoilsUtil {
-    final static float upkeepModifier = 1.0f;
-    final static boolean doTimeWarp=true;
-    final static boolean clampTime=true;
+    final static float CLOAK_UPKEEP_MODIFIER = 1.0f;
+    final static boolean SIMULATE_TIMEFLOW =true;
+    final static boolean TIMEFLOW_SIM_CLAMP =true;
     final static float FLUX_THRESHOLD_INCREASE_PERCENT=10000.0f;
+    public static float TIMEWARP_EFFECTIVENESS_MULT=0.5f;
     final static String myModel="khephasestasiso";
-    boolean wasPhased=false;
 
+    //old and probably shouldnt remain
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if (index == 0) return (upkeepModifier *100f) + "%";
+        if (index == 0) return (CLOAK_UPKEEP_MODIFIER *100f) + "%";
         return "PIGEON";
     }
 
     public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
-        handlePhaseBonuses(stats,id,upkeepModifier,FLUX_THRESHOLD_INCREASE_PERCENT);
+        handlePhaseBonuses(stats,id, CLOAK_UPKEEP_MODIFIER,FLUX_THRESHOLD_INCREASE_PERCENT);
     }
 
     @Override
     public void advanceInCombat(ShipAPI ship, float amount) {
-        wasPhased=handlePhase(ship,myModel,doTimeWarp,wasPhased,clampTime);
+        handlePhase(ship,myModel, SIMULATE_TIMEFLOW, TIMEFLOW_SIM_CLAMP,amount,TIMEWARP_EFFECTIVENESS_MULT);
     }
 
     @Override
@@ -32,5 +34,10 @@ public class PhaseStasisCoilsO extends PhaseStasisCoilsUtil {
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
         return applicable(ship,myModel);
+    }
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
+        tooltipHandler(tooltip,hullSize,ship,width,isForModSpec,CLOAK_UPKEEP_MODIFIER,FLUX_THRESHOLD_INCREASE_PERCENT,SIMULATE_TIMEFLOW,TIMEFLOW_SIM_CLAMP,TIMEWARP_EFFECTIVENESS_MULT);
     }
 }
