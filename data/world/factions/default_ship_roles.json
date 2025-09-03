@@ -8,5 +8,8 @@
 	"combatMedium":{
 		"khe_facet_Strike":1,
 		"khe_facet_Peanut":1
+	},
+	"combatSmall":{
+		"khe_vanguard_Strike":0.5
 	}
 }

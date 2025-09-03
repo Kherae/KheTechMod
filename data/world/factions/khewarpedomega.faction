@@ -1,9 +1,9 @@
 {
 	"id":"khewarpedomega", # ... or is it?
 	"displayName":"Warped Omega",
-	"displayNameWithArticle":"the Warped Omega",
-	"displayNameLong":"Warped Omega",
-	"displayNameLongWithArticle":"the Warped Omega",
+	"displayNameWithArticle":"the Phase-Warped Omega",
+	"displayNameLong":"Phase-Warped Omega",
+	"displayNameLongWithArticle":"the Phase-Warped Omega",
 	"entityNamePrefix":"",
 	"personNamePrefix":"",
 	"personNamePrefixAOrAn":"an",
@@ -26,6 +26,7 @@
 	},
 	"variantOverrides":{
 	},
+	#if they know nothing, then MMM shouldnt be able to spawn anything. since this is only supposed to be used for the bounty
 	# multiplier for how often hulls show up in the faction's fleets
 	"hullFrequency":{
 		"tags":{
@@ -35,23 +36,23 @@
 	},
 	# ships the faction gets access to when importing S&W out-of-faction
 	"shipsWhenImporting":{
-		"tags":["omega","warpedomega"],
+		"tags":[],
 		"hulls":[
 		],
 	},
 	"knownShips":{
-		"tags":["omega","warpedomega"],
+		"tags":[],
 		"hulls":[
 		],
 	},
 	# listing ships here will make the faction mostly use them even if other hulls become available
 	"priorityShips":{
-		"tags":["warpedomega"],
+		"tags":[],
 		"hulls":[
 		],
 	},
 	"knownFighters":{
-		"tags":["omega","warpedomega"],
+		"tags":[],
 		"fighters":[
 		],
 	},
@@ -61,46 +62,18 @@
 		],
 	},
 	"knownWeapons":{
-		"tags":["omega","warpedomega"],
+		"tags":[],
 		"weapons":[
 		],
 	},
 	"priorityWeapons":{
-		"tags":["warpedomega"],
+		"tags":[],
 		"weapons":[
 		],
 	},
 	"knownHullMods":{
-		"tags":["base_bp", "omega"],
+		"tags":[],
 		"hullMods":[
-			"advancedshieldemitter", # accelerated
-			"advancedoptics",
-			"turretgyros",
-			"armoredweapons",
-			"augmentedengines",
-			"autorepair",
-			"converted_hangar",
-			"eccm",
-			"ecm",
-			"expanded_deck_crew",
-			"magazines",
-			"missleracks",
-			"extendedshieldemitter",
-			"frontemitter",
-			"frontshield",  # makeshift
-			"hardenedshieldemitter",
-			"heavyarmor",
-			"insulatedengine",
-			"pointdefenseai",
-			"targetingunit",
-			"nav_relay",
-			"adaptiveshields", # omni
-			"operations_center",
-			"recovery_shuttles",
-			"fluxbreakers",
-			"solar_shielding",
-			"stabilizedshieldemitter",
-			"surveying_equipment",
 		],
 	},
 	"factionDoctrine":{
