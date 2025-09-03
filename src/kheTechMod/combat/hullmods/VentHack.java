@@ -2,6 +2,11 @@ package kheTechMod.combat.hullmods;
 
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
+
+import java.awt.*;
 
 public class VentHack extends BaseHullMod {
 	//these statics are shared by all users of the class. they should not be modified. ever.
@@ -43,10 +48,10 @@ public class VentHack extends BaseHullMod {
 	public String getUnapplicableReason(ShipAPI ship) {
 		if (ship==null){return null;}
 		//too unbalanced otherwise...
-		boolean isPhase=KheUtilities.isPhaseShip(ship,false);
+		boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,true);
 		boolean isShielded=KheUtilities.isShielded(ship,true,false);
 		if (isPhase) {
-			return "Cannot be installed on phase ships.";
+			return "Cannot be installed on phase ships or ships with a damper field.";
 		}
 		else if (isShielded) {
 //			return "Cannot be installed on ships that natively have shields.";
@@ -57,9 +62,25 @@ public class VentHack extends BaseHullMod {
 
 	@Override
 	public boolean isApplicableToShip(ShipAPI ship) {
-		boolean isPhase=KheUtilities.isPhaseShip(ship,false);
+        boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,true);
 		boolean isShielded=KheUtilities.isShielded(ship,true,false);
 		return (!(isPhase || isShielded));
 	}
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
+        Color bad = Misc.getNegativeHighlightColor();
+        Color good = Misc.getHighlightColor();
+
+        if (ship == null || ship.getMutableStats() == null) return;
+        float opad = 10f;
+        tooltip.addSectionHeading("Stats", Alignment.MID, opad);
+        tooltip.addPara("Flux dissipation: %s, scales with %s",opad,good,
+                KheUtilities.lazyKheGetMultString(NATIVE_VENT_RATE*BASE_VENT_MULTIPLIER),"non-zero vent rate modifiers");
+        tooltip.addPara(
+                "Flux capacity: %s\nZero-flux speed: %s\nSupply upkeep: %s",opad,bad,
+                KheUtilities.lazyKheGetMultString(FLUX_CAPACITY_MULT),KheUtilities.lazyKheGetMultString(0),KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY)
+        );
+    }
 
 }

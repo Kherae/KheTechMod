@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ public class WeaponArtilleryModuleBallisticUnstable extends WeaponArtilleryModul
 	public final String myID="kheartillerymoduleballisticu";
 	public final float OVERLOADTHRESHOLD=0.8f;
 	public final float COSTREDUCTION = 10f;
+    //public final float FLUXCAPACITYPENALTY=0.9f;
 	public final boolean ISBEAM=false;
 
 	public final static List<WeaponAPI.WeaponType> WEAPONTYPES = Collections.singletonList(
@@ -30,6 +32,7 @@ public class WeaponArtilleryModuleBallisticUnstable extends WeaponArtilleryModul
 	@Override
 	public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
 		KheUtilities.applyCostModifiers(id,COSTREDUCTION,stats,VALIDSIZES,WEAPONTYPES,ISBEAM);
+        //stats.getFluxCapacity().modifyMult(id,FLUXCAPACITYPENALTY);
 	}
 
 	public String getDescriptionParam(int index, HullSize hullSize) {
@@ -63,4 +66,9 @@ public class WeaponArtilleryModuleBallisticUnstable extends WeaponArtilleryModul
 		if(buffer==null){buffer=super.getCanNotBeInstalledNowReason(ship,marketOrNull,mode);}
 		return buffer;
 	}
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
+        tooltipHandler(tooltip,hullSize,ship,width,isForModSpec,WEAPONTYPES,VALIDSIZES,ISBEAM,COSTREDUCTION,RANGEBONUS,OVERLOADTHRESHOLD,NOOPPENALTY,FLUXPENALTYMULT);
+    }
 }

@@ -6,6 +6,11 @@ import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
+
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -143,5 +148,42 @@ public class WeaponReplexerUtil extends BaseHullMod {
             }
 		}
 		return (int) (currentOPBuffer - limit);
+    }
+
+    public static void tooltipHandler(
+            TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec,
+            List<WeaponAPI.WeaponType> validTypes, List<WeaponAPI.WeaponSize> validSizes,
+            float costreduction, float opmult, float overloadpenalty, float fluxpenaltymult
+    ){
+        Color bad = Misc.getNegativeHighlightColor();
+        Color good = Misc.getHighlightColor();
+        Color mid = Misc.getTextColor();
+        Color darkBad = Misc.setAlpha(Misc.scaleColorOnly(bad, 0.4f), 175);
+//        Color verygood=Misc.getStoryOptionColor();
+//        Color verygood2=Misc.getStoryDarkColor();
+
+        if (ship == null || ship.getMutableStats() == null) return;
+        float opad = 10f;
+
+        tooltip.addSectionHeading("Applicable Weapons", Alignment.MID, opad);
+        tooltip.addPara("Size: %s\nType: %s",opad,good,KheUtilities.slotSizeListString(validSizes),KheUtilities.slotTypeListString(validTypes));
+
+        tooltip.addSectionHeading("Stats", Alignment.MID, opad);
+        tooltip.addPara("OP cost decrease: %s",opad,good,Math.round(costreduction)+"");
+        if(overloadpenalty!=1f){
+            Color overloadColor;if(overloadpenalty<1f){overloadColor=good;}else{overloadColor=bad;}
+            tooltip.addPara("Overload duration: %s",opad,overloadColor,KheUtilities.lazyKheGetMultString(overloadpenalty,1));
+        }
+
+        tooltip.addSectionHeading("Tech Notes: Ordnance Overload", mid, darkBad, Alignment.MID, opad);
+        tooltip.addPara("Weapon flux cost penalty: %s per Base OP, added for all affected weapons.",
+                opad,bad,Math.round(opmult)+"%");
+        tooltip.addPara("Fluxless weapon dissipation penalty: %s per Base OP, multiplicative per weapon",
+                opad,bad,Math.round(fluxpenaltymult)+"%"
+        );
+        tooltip.addPara("%s",
+                opad,bad,"Stat UIs may not properly reflect cost increases!"
+        );
+
     }
 }

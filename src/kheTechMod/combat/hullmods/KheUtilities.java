@@ -12,6 +12,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSlotAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import org.apache.log4j.Logger;
+
 import java.util.*;
 
 import static com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript.restoreToNonDHull;
@@ -19,17 +21,24 @@ import static com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript.resto
 //import org.apache.log4j.Logger;
 
 public class KheUtilities {
-//    private static final Logger log = Logger.getLogger(KheUtilities.class);
+    private static final Logger log = Logger.getLogger(KheUtilities.class);
+    // static final Logger log = Logger.getLogger(KheUtilities.class);
 
     public enum statCalcMode{MULTIPLY,PERCENT,FLAT}
-
-    public static boolean isPhaseShip(ShipAPI ship,boolean allowFuzz) {
+    public static boolean isPhaseShip(ShipAPI ship,
+        boolean checkHullSpecIsPhase,boolean checkDefenseType,boolean checkPhaseFieldHullmod
+        /*,boolean checkShipSystemIsPhase*///cant as we can't (easily) check if a system is explicitly a phase system.
+    ) {
+        //a major problem here. ship.getHullSpec.isPhase() depends on the ship actually having the hint PHASE added to its entry in ship_data.csv
+        //might just go with a more brute force option
         return
-            (ship.getHullSpec().isPhase()) ||
-            (allowFuzz&&(ship.getHullSpec().getDefenseType() == ShieldAPI.ShieldType.PHASE))
+            (checkHullSpecIsPhase&&(ship.getHullSpec().isPhase()))//this checks if the ship has the PHASE hint, basically. or using the vanilla phase cloak.
+            ||(checkDefenseType&&(ship.getHullSpec().getDefenseType() == ShieldAPI.ShieldType.PHASE))//generally more reliable?
+            ||(checkPhaseFieldHullmod&&ship.getVariant().hasHullMod("phasefield"))//check if the ship has the phase field hullmod which is usually on phase ships
+            //||(checkShipSystemIsPhase&&((ship.getSystem()!=null) &&(ship.getSystem().)))
         ;
     }
-    
+
     public static boolean isShielded(ShipAPI ship,boolean allowShunt,boolean considerBase){
         return
             (!(allowShunt && shipHasHullmod(ship,"shield_shunt"))) &&
@@ -63,7 +72,6 @@ public class KheUtilities {
         for (Map.Entry<String, MutableStat.StatMod> modEntry : someMods.entrySet()) {
             MutableStat.StatMod mod = modEntry.getValue();
             if((excludeIDs!=null)&&(excludeIDs.contains(mod.source))){continue;}
-
             float card=mod.getValue();
             if((excludeZero||(calcMode!=statCalcMode.MULTIPLY))&&(card==0f)){continue;}
 
@@ -102,9 +110,16 @@ public class KheUtilities {
         return ((base * (1f + stackPercent)) + stackFlat) * stackMult;
     }
 
-    public static String lazyKheGetMultString(float input){return lazyKheGetMultString(input,0f);}
-    public static String lazyKheGetMultString(float input,float places){
-        return (Math.round(input*100f*Math.pow(10f,places))/(100f*Math.pow(10f,places)))+"x";
+    public static String lazyKheGetMultString(float input){return lazyKheGetMultString(input,0f,false);}
+    public static String lazyKheGetMultString(float input,float places){return lazyKheGetMultString(input,places,false);}
+    public static String lazyKheGetMultString(float input,float places,boolean leftSide){
+        String buffer=(Math.round(input*100f*Math.pow(10f,places))/(100f*Math.pow(10f,places)))+"";
+        if(buffer.contains(".")){
+            while(buffer.endsWith("0")){buffer=buffer.substring(0,buffer.length()-1);}
+        }
+        if(buffer.endsWith(".")){buffer=buffer.substring(0,buffer.length()-1);}
+        if(leftSide){return "x"+buffer;}
+        return buffer+"x";
     }
 
     public static PersonAPI clonePersonForFighter(PersonAPI oldPerson){
@@ -439,4 +454,32 @@ public class KheUtilities {
     public static boolean isThisRatsExoship(MarketAPI marketOrNull){
         return ((marketOrNull!=null)&&(marketOrNull.getId().startsWith("exoship_")||marketOrNull.getId().startsWith("exoship_broken_")));
     }
+
+    public static String slotSizeListString(List<WeaponAPI.WeaponSize> sizes) {
+        StringJoiner sj = new StringJoiner(", ");
+        for (WeaponAPI.WeaponSize s : sizes){sj.add(s.getDisplayName());}
+        return sj.toString();
+    }
+
+    public static String slotTypeListString(List<WeaponAPI.WeaponType> types) {
+        StringJoiner sj = new StringJoiner(", ");
+        for (WeaponAPI.WeaponType s : types){sj.add(s.getDisplayName());}
+        return sj.toString();
+    }
+
+    public static boolean handleInvuln(String id,boolean on,MutableShipStatsAPI stats){
+        if(on){
+            stats.getEmpDamageTakenMult().modifyMult(id, 0f);
+            stats.getArmorDamageTakenMult().modifyMult(id, 0f);
+            stats.getHullDamageTakenMult().modifyMult(id, 0f);
+            stats.getEngineDamageTakenMult().modifyMult(id, 0f);
+        } else{
+            stats.getEmpDamageTakenMult().unmodify(id);
+            stats.getArmorDamageTakenMult().unmodify(id);
+            stats.getHullDamageTakenMult().unmodify(id);
+            stats.getEngineDamageTakenMult().unmodify(id);
+        }
+        return on;
+    }
+
 }

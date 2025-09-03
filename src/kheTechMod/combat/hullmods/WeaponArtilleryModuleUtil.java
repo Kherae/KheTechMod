@@ -5,6 +5,11 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.listeners.WeaponRangeModifier;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
+
+import java.awt.*;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -83,15 +88,16 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		return false;
 	}
 
+    //technically this should no longer be used...it's handled elsewhere now.
 	public static String descParamResolve(
 		int index,
 		List<WeaponAPI.WeaponType> WEAPONTYPES, List<WeaponAPI.WeaponSize> VALIDSIZES,
 		float nooppenalty, float fluxpenaltymult, float rangebonus, float costreduction,float overloadthreshold,boolean isBeam
 	) {
-		if (index==0){return slotSizeListString(VALIDSIZES);}
+		if (index==0){return KheUtilities.slotSizeListString(VALIDSIZES);}
 		if (index==1){
 			String buffer="";
-			if(isBeam){buffer+="Beam";}else{buffer+=slotTypeListString(WEAPONTYPES);}
+			if(isBeam){buffer+="Beam";}else{buffer+=KheUtilities.slotTypeListString(WEAPONTYPES);}
 			return buffer;
 		}
 		if (index==2){return Math.floor(rangebonus)+"";}
@@ -141,17 +147,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		}
 	}
 
-	public static String slotSizeListString(List<WeaponAPI.WeaponSize> sizes) {
-		StringJoiner sj = new StringJoiner(", ");
-		for (WeaponAPI.WeaponSize s : sizes){sj.add(s.getDisplayName());}
-		return sj.toString();
-	}
 
-	public static String slotTypeListString(List<WeaponAPI.WeaponType> types) {
-		StringJoiner sj = new StringJoiner(", ");
-		for (WeaponAPI.WeaponType s : types){sj.add(s.getDisplayName());}
-		return sj.toString();
-	}
 
 	public float getOverloadThreshold() {
 		return OVERLOADTHRESHOLD;
@@ -184,5 +180,48 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		if (KheUtilities.shipHasHullmod(ship,myID)){return false;}
 		return (KheUtilities.wouldAdditionPutOverLimit(myID,ship,hullmodWeaponTypes,weaponSizes,beamMode,false,costModifier)>0f);
 	}
+
+
+    public static void tooltipHandler(
+            TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec,
+            List<WeaponAPI.WeaponType> validTypes,List<WeaponAPI.WeaponSize> validSizes,boolean isBeam,
+            float costreduction,float rangebonus, float overloadthreshold,float nooppenalty,float fluxpenaltymult
+    ){
+        Color bad = Misc.getNegativeHighlightColor();
+        Color good = Misc.getHighlightColor();
+        Color mid = Misc.getTextColor();
+        Color darkBad = Misc.setAlpha(Misc.scaleColorOnly(bad, 0.4f), 175);
+//        Color verygood=Misc.getStoryOptionColor();
+//        Color verygood2=Misc.getStoryDarkColor();
+
+        if (ship == null || ship.getMutableStats() == null) return;
+        float opad = 10f;
+
+        tooltip.addSectionHeading("Applicable Weapons", Alignment.MID, opad);
+        String typeBuffer="";
+        if(isBeam){typeBuffer+="Beam";}else{typeBuffer+=KheUtilities.slotTypeListString(validTypes);}
+        tooltip.addPara("Size: %s\nType: %s",opad,good,KheUtilities.slotSizeListString(validSizes),typeBuffer);
+
+        tooltip.addSectionHeading("Stats", Alignment.MID, opad);
+        tooltip.addPara("OP cost increase: %s",opad,bad,Math.round(costreduction)+"");
+        tooltip.addPara("Range increase: %s",opad,good,Math.round(rangebonus)+"");
+
+        tooltip.addSectionHeading("Tech Notes: Ordnance Overload", mid, darkBad, Alignment.MID, opad);
+        if(overloadthreshold<1f){
+            tooltip.addPara("Ship overloads when reaching %s flux.",
+                    opad,bad,
+                    (int)(Math.round(overloadthreshold*1000f)/10f)+"%"
+            );
+        }
+        tooltip.addPara("Zero OP flux cost penalty: %s per Base OP, added for all affected weapons.",
+                opad,bad,Math.round(nooppenalty)+"%");
+        tooltip.addPara("Fluxless weapon dissipation penalty: %s per Base OP, multiplicative per weapon",
+                opad,bad,Math.round(fluxpenaltymult)+"%"
+        );
+        tooltip.addPara("%s",
+                opad,bad,"Stat UIs may not properly reflect cost increases!"
+        );
+
+    }
 
 }

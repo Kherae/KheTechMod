@@ -29,7 +29,7 @@ public class HardfluxEMPCoils extends BaseHullMod {
     @Override
     public String getUnapplicableReason(ShipAPI ship) {
         if (ship==null){return null;}
-        boolean isPhase=KheUtilities.isPhaseShip(ship,false);
+        boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,false);
         boolean isShielded=KheUtilities.isShielded(ship,true,false);
         if (!(isPhase||isShielded)) {
             return "Ship has no shields and does not phase.";
@@ -39,7 +39,7 @@ public class HardfluxEMPCoils extends BaseHullMod {
 
     @Override
     public boolean isApplicableToShip(ShipAPI ship) {
-        boolean isPhase=KheUtilities.isPhaseShip(ship,false);
+        boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,false);
         boolean isShielded=KheUtilities.isShielded(ship,true,false);
         return (isPhase || isShielded);
     }

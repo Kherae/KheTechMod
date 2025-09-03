@@ -4,6 +4,9 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+
+import java.util.Collections;
 
 public class WeaponReplexerBallistic extends WeaponReplexerUtil {
 	final String myID="khereplexerballistic";
@@ -46,4 +49,9 @@ public class WeaponReplexerBallistic extends WeaponReplexerUtil {
 		if(buffer==null){buffer=super.getCanNotBeInstalledNowReason(ship,marketOrNull,mode);}
 		return buffer;
 	}
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
+        tooltipHandler(tooltip,hullSize,ship,width,isForModSpec, Collections.singletonList(getWeaponType()),VALIDSIZES,COSTREDUCTION,OPMULT,OVERLOADPENALTYMULT,FLUXPENALTYMULT);
+    }
 }

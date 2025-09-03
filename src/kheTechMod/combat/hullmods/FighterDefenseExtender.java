@@ -1,6 +1,9 @@
 package kheTechMod.combat.hullmods;
 
 import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Misc;
 
 import java.awt.*;
 
@@ -11,7 +14,7 @@ public class FighterDefenseExtender extends BaseHullMod {
 
     @Override
     public void applyEffectsToFighterSpawnedByShip(ShipAPI fighter, ShipAPI ship, String id) {
-        boolean isPhase=KheUtilities.isPhaseShip(fighter,false);
+        boolean isPhase=KheUtilities.isPhaseShip(fighter,true,true,false);
         boolean isShielded=KheUtilities.isShielded(fighter,false,false);
         if(isPhase){
             ShipSystemAPI phase=fighter.getPhaseCloak();
@@ -33,6 +36,7 @@ public class FighterDefenseExtender extends BaseHullMod {
             MutableShipStatsAPI stats=fighter.getMutableStats();
             stats.getArmorDamageTakenMult().modifyMult(id, JUNKERMOD);
             stats.getHullDamageTakenMult().modifyMult(id, JUNKERMOD);
+            stats.getEmpDamageTakenMult().modifyMult(id, JUNKERMOD);
         }
     }
 
@@ -50,5 +54,21 @@ public class FighterDefenseExtender extends BaseHullMod {
     public String getUnapplicableReason(ShipAPI ship) {
         if (!KheUtilities.hasFighterBays(ship)){return "Ship does not have fighter bays";}
         return null;
+    }
+
+
+    @Override
+    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
+        Color bad = Misc.getNegativeHighlightColor();
+        Color good = Misc.getHighlightColor();
+        if (ship == null || ship.getMutableStats() == null) return;
+        float opad = 10f;
+        tooltip.addSectionHeading("Shielded Fighter Bonuses", Alignment.MID, opad);
+        tooltip.addPara("Shield radius: %s\nShield turn rate: %s",opad,good,KheUtilities.lazyKheGetMultString(SHIELDBONUSES),KheUtilities.lazyKheGetMultString(SHIELDBONUSES));
+        tooltip.addSectionHeading("Phase Fighter Bonuses", Alignment.MID, opad);
+        tooltip.addPara("Phase activation: %s\nPhase upkeep: %s",opad,good,KheUtilities.lazyKheGetMultString(PHASEBONUSES),KheUtilities.lazyKheGetMultString(PHASEBONUSES));
+        tooltip.addSectionHeading("Hull-Only Fighter Bonuses", Alignment.MID, opad);
+        tooltip.addPara("Hull damage taken: %s\nArmor damage taken: %s\nEMP damage taken: %s",opad,good,
+                KheUtilities.lazyKheGetMultString(JUNKERMOD),KheUtilities.lazyKheGetMultString(JUNKERMOD),KheUtilities.lazyKheGetMultString(JUNKERMOD));
     }
 }
