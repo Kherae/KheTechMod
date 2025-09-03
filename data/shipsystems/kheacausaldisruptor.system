@@ -1,0 +1,17 @@
+{
+	"id":"kheacausaldisruptor",
+	"type":"STAT_MOD",
+	"aiType":"ACAUSAL_DISRUPTOR",
+	"canUseWhileRightClickSystemOn":true,
+	"statsScript":"kheTechMod.combat.shipsystems.KheWarpedAcausalDisruptorStats",
+	"fadeActivationSoundOnChargedown":true,
+	"useSound":"system_quantumdisruptor",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+	}
+}
+
+
+
+
