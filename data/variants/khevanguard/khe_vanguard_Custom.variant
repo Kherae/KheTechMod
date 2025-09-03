@@ -1,0 +1,55 @@
+{
+    "displayName": "Custom",
+    "fluxCapacitors": 0,
+    "fluxVents": 3,
+    "goalVariant": false,
+    "hullId": "khe_vanguard",
+    "hullMods": [
+        "insulatedengine",
+        "khereplexerballistic",
+        "khereplexermissile",
+        "fluxbreakers",
+        "targetingunit",
+        "hardened_subsystems",
+        "armoredweapons",
+        "auxiliarythrusters",
+        "unstable_injector",
+        "solar_shielding",
+        "turretgyros"
+    ],
+    "permaMods": [],
+    "sMods": [],
+    "variantId": "khe_vanguard_Custom",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 005": "lightneedler",
+                "WS 006": "lightneedler"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 000": "reaper",
+                "WS 001": "reaper",
+                "WS 002": "reaper"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 007": "lightag"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "vulcan",
+                "WS 004": "vulcan"
+            }
+        }
+    ]
+}
