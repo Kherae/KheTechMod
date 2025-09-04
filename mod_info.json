@@ -3,7 +3,7 @@
   "name": "Khe's Tech", # Displayed to the player
   "author": "Khe",
   "utility": false,
-  "version": { "major": '1', "minor": '0', "patch": '0' },
+  "version": { "major": '1', "minor": '0', "patch": '1' },
   "description": "Adds whatever the mew wants.",
   "gameVersion": "0.98a-RC8",
   "jars": [ "jars/KheTech.jar" ],
