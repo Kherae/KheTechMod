@@ -446,9 +446,9 @@ public class KheUtilities {
         return procNum;
     }
 
-    public static float lerp(float start, float stop, float progress) {
-        return start+(progress*(stop-start));
-    }
+    public static float clamp(float min,float max,float value){return(Math.max(min,Math.min(max,value)));}
+    public static float lerp(float start, float stop, float progress) {return start+(progress*(stop-start));}
+    public static float inverseLerp(float left, float right, float value){return (value - left)/(right - left);}
 
     public final static String RATSEXOSHIPNOREMOVALSTRING="Cannot be removed at an exoship.";
     public static boolean isThisRatsExoship(MarketAPI marketOrNull){
