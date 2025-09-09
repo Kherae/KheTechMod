@@ -120,7 +120,7 @@
     "job_reward_scaling": 0.5,
     "job_reputation_reward": 5,
 
-    "job_type": "assassination",
+    "job_type": "obliteration",
     "job_show_type": true,
     "job_show_captain": true,
     "job_show_fleet": "none",
