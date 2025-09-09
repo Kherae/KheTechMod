@@ -1,7 +1,7 @@
 {
     "displayName": "Custom",
     "fluxCapacitors": 0,
-    "fluxVents": 3,
+    "fluxVents": 0,
     "goalVariant": false,
     "hullId": "khe_vanguard",
     "hullMods": [
@@ -15,7 +15,8 @@
         "auxiliarythrusters",
         "unstable_injector",
         "solar_shielding",
-        "turretgyros"
+        "turretgyros",
+        "autorepair"
     ],
     "permaMods": [],
     "sMods": [],
