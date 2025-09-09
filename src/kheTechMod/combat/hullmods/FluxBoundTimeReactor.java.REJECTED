@@ -1,0 +1,64 @@
+package kheTechMod.combat.hullmods;
+
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.combat.*;
+import kheTechMod.combat.plugins.KheTimeCleanup;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
+
+//idea rejected, as was the original idea by the bug:
+//when firing: +50% timeflow. when not firing: -80% timeflow. when venting: -30% timeflow
+//there is no way to balance that properly. at all.
+//there is no way to balance THIS one either, basing timeflow off flux is a hard sell.
+//closest idea I can think of is having it scale from 0.5 timeflow at max flux to 1.5 at no flux and halving dissipation,
+//but even then...fluxless weapons are a thing, as are junkers (hull tanks).
+//there's a reason why the other mod's timeflow reactor has a peak performance penalty when built in.
+
+//Jiggle-Lag Time Reactor,khefluxboundtimereactor,6,0,KHM,"req_spaceport,no_drop_salvage",Special,1357,,,,5,10,15,20,kheTechMod.combat.hullmods.FluxBoundTimeReactor,"Multiplies timeflow by %s when any flux-costing large non-beam weapons with refire delay greater or equal to %s are firing. Otherwise, multiplies timeflow by %s while venting or %s.","Timeflow up when shooting slow weapons, down when venting or not firing.",,graphics/hullmods/automated.png
+public class FluxBoundTimeReactor extends BaseHullMod {
+    public static final String myID="khefluxboundtimereactor";
+	public static final float TIME_MULT_LOW = 0.5f;
+	public static final float TIME_MULT_HIGH = 1.5f;
+	public static final float FLUX_LEVEL_LOW = 0f;
+	public static final float FLUX_LEVEL_HIGH = 1f;
+    public static final Color JITTER_COLOR = new Color(105,105,105,80);
+    private static final Logger log = Logger.getLogger(FluxBoundTimeReactor.class);
+
+    @Override
+    public void advanceInCombat(ShipAPI ship, float amount) {
+        if (Global.getCombatEngine().isPaused()) {return;}
+        String localID=myID+ship.getId();
+
+        boolean isVenting=ship.getFluxTracker().isVenting();
+        float fluxLevel=KheUtilities.clamp(FLUX_LEVEL_LOW,FLUX_LEVEL_HIGH,ship.getFluxLevel());
+        float iLFL=KheUtilities.inverseLerp(FLUX_LEVEL_LOW,FLUX_LEVEL_HIGH,fluxLevel);
+        float timeM=isVenting?1.0f:KheUtilities.lerp(TIME_MULT_LOW,TIME_MULT_HIGH,iLFL);
+        float rComp=KheUtilities.clamp(0f,255f,JITTER_COLOR.getRed()+(isVenting?0f:KheUtilities.lerp(0f,105f,iLFL)));
+        float gComp=KheUtilities.clamp(0f,255f,JITTER_COLOR.getGreen()+(isVenting?0f:KheUtilities.lerp(105f,0f,iLFL)));
+        Color currentColor=new Color(rComp,JITTER_COLOR.getBlue(),gComp,JITTER_COLOR.getAlpha());
+        ship.setJitterUnder(this, currentColor, 1, 3, 2, 10);
+
+        if (ship.isAlive()&&(!ship.isPiece())){
+            MutableShipStatsAPI stats = ship.getMutableStats();
+            stats.getTimeMult().modifyMult(localID, timeM);
+            if (ship == Global.getCombatEngine().getPlayerShip()) {
+                Global.getCombatEngine().getTimeMult().modifyMult(localID, 1f / timeM);
+                //sadly no easy way to enforce clearing once the ship retreats. gonegone. thus, an external tracker is used.
+                KheTimeCleanup.registerTimeEffect(localID);
+            } else {
+                Global.getCombatEngine().getTimeMult().unmodify(localID);
+            }
+        } else {
+            Global.getCombatEngine().getTimeMult().unmodify(myID);
+            ship.getMutableStats().getTimeMult().unmodify(myID);
+        }
+	}
+
+    @Override
+    public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
+        if (index == 0){return KheUtilities.lazyKheGetMultString(TIME_MULT_LOW);}
+        if (index == 1){return KheUtilities.lazyKheGetMultString(TIME_MULT_HIGH);}
+        return "PIGEON";
+    }
+}
