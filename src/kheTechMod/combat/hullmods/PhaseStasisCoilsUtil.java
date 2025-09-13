@@ -175,7 +175,7 @@ public class PhaseStasisCoilsUtil extends BaseHullMod {
         }
         if(timeWarp){
             tooltip.addSectionHeading("Diverted Timeflow", Alignment.MID, opad);
-            String buffer="Increases and decreases to timeflow are applied to weapons, fighters, flux dissipation, and engine and hull repairs at %s of their value";
+            String buffer="Increases and decreases to timeflow are applied to weapons, fighter bays (but not fighters), flux dissipation, and engine and hull repairs at %s of their value";
             if(clampTime){buffer+=", but may not bring the ship below 1.0x timeflow.";}else{buffer+=".";}
             tooltip.addPara(buffer,opad,good,
                 (int)(Math.round(timewarpEffectiveness*1000f)/10f)+"%"
