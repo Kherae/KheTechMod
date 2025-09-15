@@ -1,0 +1,80 @@
+package kheTechMod.combat.hullmods;
+
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
+import com.fs.starfarer.api.combat.listeners.HullDamageAboutToBeTakenListener;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
+import org.lwjgl.util.vector.Vector2f;
+
+
+//in order to implement this one i'd need to clone and modify the vanilla reality disruptor and all it entails
+//,,,,,,,,,,,,,,,,,,,
+//PHElectroboom,kheelectroboommod,,,,,,,,TRUE,,0,0,0,0,kheTechMod.combat.hullmods.KheFluxChargedDetonator,"[PH]",,,graphics/hullmods/erratic_injector.png
+//shelved for similar reason:
+//Voidhunter Deathsynthesis: On-death, generate a damaging field of corrosive blood and sharp bone that affects enemy+ally ships in its area. Inherits ship death explosion modifiers.
+//			Voidhunter Singulary: On-death, release a small temporary(X seconds) organic mass(a particle) that links and pulls enemy+ally ships into it with tendrils with a pullforce of (X). Deals no damage.
+//				Costs +15 OP if Voidhunter Deathsynthesis is also installed. Radius and pull-strength are affected by death explosion modifiers.
+
+public class KheFluxChargedDetonator extends BaseHullMod {
+    final static String myID="kheelectroboommod";
+    final static float MANEUVERABILITYBOOST = 2f;
+    final static float SPEEDBOOST = 1.5f;
+    final static String PROJ_ID="";
+
+
+    public static class KheFluxChargedDetonatorListener implements AdvanceableListener, HullDamageAboutToBeTakenListener {
+        public boolean emergencyDive = false;
+        public boolean playedSound=false;
+        public float diveProgress = 0f;
+        public float recordCR=1f;
+
+        public final ShipAPI ship;
+        public final MutableShipStatsAPI shipStats;
+        public KheFluxChargedDetonatorListener(ShipAPI ship) {
+            this.ship = ship;this.shipStats=ship.getMutableStats();
+        }
+
+        public boolean notifyAboutToTakeHullDamage(Object param, ShipAPI ship, Vector2f point, float damageAmount) {
+            if (!emergencyDive) {
+
+                float hull = ship.getHitpoints();
+                if (damageAmount >= hull) {
+                    emergencyDive = true;
+                    if (!ship.isPhased()) {
+                        Global.getSoundPlayer().playSound("system_phase_cloak_activate", 1f, 1f, ship.getLocation(), ship.getVelocity());
+                    }
+                }
+            }
+
+            return emergencyDive;
+        }
+
+        public void advance(float amount) {
+            if (emergencyDive) {
+                diveProgress += amount * ship.getPhaseCloak().getChargeUpDur();
+                ship.getMutableStats().getHullDamageTakenMult().modifyMult(myID, 0f);
+
+                if (diveProgress >= 1f) {
+                    if ((!playedSound)) {
+                        playedSound=true;
+                        float EXPLO_MULT = shipStats.getDynamic().getStat(Stats.EXPLOSION_DAMAGE_MULT).getModifiedValue();
+                        float EXPLO_RAD = shipStats.getDynamic().getStat(Stats.EXPLOSION_RADIUS_MULT).getModifiedValue();
+                        CombatEntityAPI theProj = Global.getCombatEngine().spawnProjectile(ship, null, PROJ_ID, ship.getLocation(), 0f, ship.getVelocity());
+                        Global.getSoundPlayer().playSound("phase_anchor_vanish", 1f, 1f, ship.getLocation(), ship.getVelocity());
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
+        if(index==5){return KheUtilities.lazyKheGetMultString(MANEUVERABILITYBOOST);}
+        return
+    }
+    @Override
+    public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
+        ship.addListener(new KheFluxChargedDetonator.KheFluxChargedDetonatorListener(ship));
+    }
+}
