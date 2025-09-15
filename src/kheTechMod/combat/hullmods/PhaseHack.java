@@ -52,29 +52,6 @@ public class PhaseHack extends BaseHullMod {
         }
     }
 
-    //basically not used.
-    public String getDescriptionParam(int index, HullSize hullSize) {
-        if (index == 0) {
-            return Math.round(FLUXPERCENTPERSECOND * 100f) + "%";
-        }
-        if (index == 1) {
-            return KheUtilities.lazyKheGetMultString(OVERLOADPENALTY);
-        }
-        if (index == 2) {
-            return Math.round(MALFUNCTIONBOOST) + "%";
-        }
-        if (index == 3) {
-            return OPPENALTY + "";
-        }
-        if (index == 4) {
-            return KheUtilities.lazyKheGetMultString(CREWLOSSMULT);
-        }
-        if (index == 5) {
-            return KheUtilities.lazyKheGetMultString(DMODMULT);
-        }
-        return null;
-    }
-
     @Override
     public void advanceInCombat(ShipAPI ship, float amount) {
         super.advanceInCombat(ship, amount);
@@ -161,31 +138,6 @@ public class PhaseHack extends BaseHullMod {
         return super.getCanNotBeInstalledNowReason(ship, marketOrNull, mode);
     }
 }
-
-//    public static final float FLUXPERCENTPERSECOND=0.01f;
-//    final static float FLUX_THRESHOLD_INCREASE_PERCENT=10000.0f;
-//    public static final float MALFUNCTIONBOOST=100f;
-//    public static final float CREWLOSSMULT=2f;
-//    public static final float DMODMULT=2f;
-//    public static final float OVERLOADPENALTY=2f;
-//    public static final float OPPENALTY=300f;
-// too much effort for a gimmick mod
-//    @Override
-//    public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
-//        Color bad = Misc.getNegativeHighlightColor();
-//        Color good = Misc.getHighlightColor();
-//
-//        if (ship == null || ship.getMutableStats() == null) return;
-//        float opad = 10f;
-//        tooltip.addSectionHeading("Stats", Alignment.MID, opad);
-//        tooltip.addPara("Flux dissipation: %s, scales with %s",opad,good,
-//                KheUtilities.lazyKheGetMultString(NATIVE_VENT_RATE*BASE_VENT_MULTIPLIER),"Non-zero vent rate modifiers");
-//        tooltip.addPara(
-//                "Flux capacity: %s\nZero-flux speed: %s\nSupply upkeep: ",opad,bad,
-//                KheUtilities.lazyKheGetMultString(FLUX_CAPACITY_MULT),KheUtilities.lazyKheGetMultString(0),KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY)
-//        );
-//    }
-//
 
 
 
