@@ -13,7 +13,7 @@ public class SystemHack extends BaseHullMod {
     }
 		
 	public String getDescriptionParam(int index, HullSize hullSize) {
-		if(index==0){return KheUtilities.lazyKheGetMultString(SYSTEM_CD_BOOST);}
+		if(index==0){return KheUtilities.lazyKheGetMultString(SYSTEM_CD_BOOST,2);}
 		return "Fart: "+index;
 	}
 

@@ -3,6 +3,11 @@ package kheTechMod.combat.hullmods;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PhaseStasisCoilsO extends PhaseStasisCoilsUtil {
     final static float CLOAK_UPKEEP_MODIFIER = 1.0f;
     final static boolean SIMULATE_TIMEFLOW =true;

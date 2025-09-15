@@ -40,7 +40,7 @@ public class VentHack extends BaseHullMod {
 	public String getDescriptionParam(int index, HullSize hullSize) {
 		if (index == 0){return (NATIVE_VENT_RATE*BASE_VENT_MULTIPLIER)+"x";}
 		if (index == 1){return FLUX_CAPACITY_MULT+"x";}
-		if (index == 2){return KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY);}
+		if (index == 2){return KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY,2);}
 		return "PIGEON";
 	}
 
@@ -76,10 +76,11 @@ public class VentHack extends BaseHullMod {
         float opad = 10f;
         tooltip.addSectionHeading("Stats", Alignment.MID, opad);
         tooltip.addPara("Flux dissipation: %s, scales with %s",opad,good,
-                KheUtilities.lazyKheGetMultString(NATIVE_VENT_RATE*BASE_VENT_MULTIPLIER),"non-zero vent rate modifiers");
+                KheUtilities.lazyKheGetMultString(NATIVE_VENT_RATE*BASE_VENT_MULTIPLIER,2),"non-zero vent rate modifiers");
         tooltip.addPara(
                 "Flux capacity: %s\nZero-flux speed: %s\nSupply upkeep: %s",opad,bad,
-                KheUtilities.lazyKheGetMultString(FLUX_CAPACITY_MULT),KheUtilities.lazyKheGetMultString(0),KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY)
+                KheUtilities.lazyKheGetMultString(FLUX_CAPACITY_MULT,2),KheUtilities.lazyKheGetMultString(0),
+                KheUtilities.lazyKheGetMultString(SUPPLY_UPKEEP_PENALTY,2)
         );
     }
 

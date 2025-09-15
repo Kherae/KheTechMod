@@ -39,14 +39,6 @@ public class Damn90s extends BaseHullMod {
 
     }
 
-    public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if (index == 0) return (ventBonus) + "%";
-        if (index == 1) return (autoVentThreshold*100f) + "%";
-        if (index == 2) return KheUtilities.lazyKheGetMultString(overloadPenalty);
-        if (index == 3) return (maxOverload) + "s";
-        return "PIGEON";
-    }
-
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
         Color bad = Misc.getNegativeHighlightColor();
@@ -56,9 +48,9 @@ public class Damn90s extends BaseHullMod {
         float opad = 10f;
         tooltip.addSectionHeading("Stats", Alignment.MID, opad);
         tooltip.addPara("Vent rate bonus: %s\nOverload duration cap: %s",opad,good,"+"+ventBonus+"%",maxOverload+"s");
-        tooltip.addPara("Overload duration: %s",opad,bad,KheUtilities.lazyKheGetMultString(overloadPenalty));
+        tooltip.addPara("Overload duration: %s",opad,bad,KheUtilities.lazyKheGetMultString(overloadPenalty,2));
         tooltip.addSectionHeading("Automated Venting System", Alignment.MID, opad);
-        tooltip.addPara("Ship automatically vents at %s flux.",opad,bad,Math.round(autoVentThreshold*100f)+"%");
+        tooltip.addPara("Ship automatically vents at %s flux.",opad,bad,KheUtilities.lazyKheGetPercentString(autoVentThreshold*100f));
     }
 
 }

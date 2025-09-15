@@ -3,6 +3,7 @@ package kheTechMod.combat.shipsystems;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.impl.combat.PhaseCloakStats;
+import kheTechMod.combat.hullmods.KheUtilities;
 //import org.apache.log4j.Logger;
 
 public class KheWarpedPhaseCloakStats extends PhaseCloakStats {
@@ -24,7 +25,8 @@ public class KheWarpedPhaseCloakStats extends PhaseCloakStats {
         if(state==State.COOLDOWN){
             Global.getCombatEngine().maintainStatusForPlayerShip(
                 STATUSKEYFLUXMULT,cloak.getSpecAPI().getIconSpriteName(),
-                "phase system venting","flux dissipation x"+PHASE_COOLDOWN_DISSIPATION_MULT+": "+Math.round(cloak.getCooldownRemaining()*10f)/10f+"s remaining.", true
+                "phase system venting","flux dissipation x"+PHASE_COOLDOWN_DISSIPATION_MULT+": "+
+                KheUtilities.lazyKheRounder(cloak.getCooldownRemaining(),1)+"s remaining.", true
             );
         }
     }

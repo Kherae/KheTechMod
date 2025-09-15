@@ -9,8 +9,8 @@ public class LuddicSmite extends LuddicTorch {
 
     @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if(index==5){return KheUtilities.lazyKheGetMultString(MANEUVERABILITYBOOST);}
-        if(index==6){return KheUtilities.lazyKheGetMultString(SPEEDBOOST);}
+        if(index==5){return KheUtilities.lazyKheGetMultString(MANEUVERABILITYBOOST,2);}
+        if(index==6){return KheUtilities.lazyKheGetMultString(SPEEDBOOST,2);}
         return super.getDescriptionParam(index,hullSize);
     }
 

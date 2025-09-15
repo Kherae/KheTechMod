@@ -41,9 +41,9 @@ public class FighterDefenseExtender extends BaseHullMod {
     }
 
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if (index == 0) return KheUtilities.lazyKheGetMultString(SHIELDBONUSES);
-        if (index == 1) return KheUtilities.lazyKheGetMultString(PHASEBONUSES);
-        if (index == 2) return KheUtilities.lazyKheGetMultString(JUNKERMOD);
+        if (index == 0) return KheUtilities.lazyKheGetMultString(SHIELDBONUSES,2);
+        if (index == 1) return KheUtilities.lazyKheGetMultString(PHASEBONUSES,2);
+        if (index == 2) return KheUtilities.lazyKheGetMultString(JUNKERMOD,2);
         return "PIGEON";
     }
 
@@ -64,11 +64,15 @@ public class FighterDefenseExtender extends BaseHullMod {
         if (ship == null || ship.getMutableStats() == null) return;
         float opad = 10f;
         tooltip.addSectionHeading("Shielded Fighter Bonuses", Alignment.MID, opad);
-        tooltip.addPara("Shield radius: %s\nShield turn rate: %s",opad,good,KheUtilities.lazyKheGetMultString(SHIELDBONUSES),KheUtilities.lazyKheGetMultString(SHIELDBONUSES));
+        tooltip.addPara("Shield radius: %s\nShield turn rate: %s",opad,good,
+                KheUtilities.lazyKheGetMultString(SHIELDBONUSES,2),KheUtilities.lazyKheGetMultString(SHIELDBONUSES,2)
+        );
         tooltip.addSectionHeading("Phase Fighter Bonuses", Alignment.MID, opad);
-        tooltip.addPara("Phase activation: %s\nPhase upkeep: %s",opad,good,KheUtilities.lazyKheGetMultString(PHASEBONUSES),KheUtilities.lazyKheGetMultString(PHASEBONUSES));
+        tooltip.addPara("Phase activation: %s\nPhase upkeep: %s",opad,good,
+                KheUtilities.lazyKheGetMultString(PHASEBONUSES,2),KheUtilities.lazyKheGetMultString(PHASEBONUSES,2)
+        );
         tooltip.addSectionHeading("Hull-Only Fighter Bonuses", Alignment.MID, opad);
         tooltip.addPara("Hull damage taken: %s\nArmor damage taken: %s\nEMP damage taken: %s",opad,good,
-                KheUtilities.lazyKheGetMultString(JUNKERMOD),KheUtilities.lazyKheGetMultString(JUNKERMOD),KheUtilities.lazyKheGetMultString(JUNKERMOD));
+                KheUtilities.lazyKheGetMultString(JUNKERMOD,2),KheUtilities.lazyKheGetMultString(JUNKERMOD,2),KheUtilities.lazyKheGetMultString(JUNKERMOD,2));
     }
 }

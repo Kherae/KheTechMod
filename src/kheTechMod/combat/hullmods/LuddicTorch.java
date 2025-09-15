@@ -15,10 +15,10 @@ public class LuddicTorch extends BaseHullMod {
     final static float DMODCHANCEMODIFIER = 100f;
 
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if(index==0){return KheUtilities.lazyKheGetMultString(EXPLODEDAMAGEMULT);}
-        if(index==1){return KheUtilities.lazyKheGetMultString(DMODEXPLODEDAMAGEMULT);}
-        if(index==2){return KheUtilities.lazyKheGetMultString(EXPLODERADIUSMULT);}
-        if(index==3){return KheUtilities.lazyKheGetMultString(DMODEXPLODERADIUSMULT);}
+        if(index==0){return KheUtilities.lazyKheGetMultString(EXPLODEDAMAGEMULT,2);}
+        if(index==1){return KheUtilities.lazyKheGetMultString(DMODEXPLODEDAMAGEMULT,2);}
+        if(index==2){return KheUtilities.lazyKheGetMultString(EXPLODERADIUSMULT,2);}
+        if(index==3){return KheUtilities.lazyKheGetMultString(DMODEXPLODERADIUSMULT,2);}
         if(index==4){return Math.round(DAMAGEPERSECOND*10000f)/100f+"%";}
         return "PIGEON";
     }

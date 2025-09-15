@@ -126,7 +126,7 @@ public class KhePhaseAnchor extends BaseHullMod {
 	public String getDescriptionParam(int index, HullSize hullSize) {
 		if (index == 0) return "zero";
 		if (index == 1) //return KheUtilities.lazyKheGetMultString(CLOAK_UPKEEP_PENALTY);
-		/*if (index == 2)*/ return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE);
+		/*if (index == 2)*/ return KheUtilities.lazyKheGetMultString(CR_LOSS_MULT_FOR_EMERGENCY_DIVE,2);
 		return null;
 	}
 

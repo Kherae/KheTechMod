@@ -62,14 +62,14 @@ public class ButtercupReactor extends BaseHullMod {
 	}
     @Override
     public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        if (index == 0){return KheUtilities.lazyKheGetMultString(TIME_MULT_NORMAL);}
-        if (index == 1){return KheUtilities.lazyKheGetMultString(PEAK_MULT);}
+        if (index == 0){return KheUtilities.lazyKheGetMultString(TIME_MULT_NORMAL,2);}
+        if (index == 1){return KheUtilities.lazyKheGetMultString(PEAK_MULT,2);}
         if (index == 2){return "the ship's total timeflow multiplier";}
         return "PIGEON";
     }
     @Override
 	public String getSModDescriptionParam(int index, HullSize hullSize) {
-        if (index == 0) return KheUtilities.lazyKheGetMultString(TIME_MULT_SMOD);
+        if (index == 0) return KheUtilities.lazyKheGetMultString(TIME_MULT_SMOD,2);
         return "PIGEON";
 	}
 }

@@ -25,16 +25,6 @@ public class DoomLaser extends BaseHullMod {
 		stats.getMissileRoFMult().modifyMult(id,FIRE_PENALTY);
 	}
 
-	public String getDescriptionParam(int index, HullSize hullSize) {
-		if (index == 0){return KheUtilities.lazyKheGetMultString(DMG_MULT,2);}
-		if (index == 1){return KheUtilities.lazyKheGetMultString(COST_MULT,2);}
-		if (index == 2){return KheUtilities.lazyKheGetMultString(RANGE_PENALTY,2);}
-		if (index == 3){return KheUtilities.lazyKheGetMultString(TURN_BOOST,2);}
-		if (index == 4){return KheUtilities.lazyKheGetMultString(FIRE_PENALTY,2);}
-		return "PIGEON";
-	}
-
-
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec){
         Color bad = Misc.getNegativeHighlightColor();
@@ -43,10 +33,15 @@ public class DoomLaser extends BaseHullMod {
         if (ship == null || ship.getMutableStats() == null) return;
         float opad = 10f;
         tooltip.addSectionHeading("Stats", Alignment.MID, opad);
-        tooltip.addPara("Beam damage: %s\nBeam turn: speed %s",opad,good,KheUtilities.lazyKheGetMultString(DMG_MULT),KheUtilities.lazyKheGetMultString(TURN_BOOST));
+        tooltip.addPara("Beam damage: %s\nBeam turn speed: %s",opad,good,
+                KheUtilities.lazyKheGetMultString(DMG_MULT,2),
+                KheUtilities.lazyKheGetMultString(TURN_BOOST,2)
+        );
         tooltip.addPara(
             "Beam range: %s\nBeam flux: cost %s\nALL weapon fire rate: %s",opad,bad,
-            KheUtilities.lazyKheGetMultString(RANGE_PENALTY),KheUtilities.lazyKheGetMultString(COST_MULT),KheUtilities.lazyKheGetMultString(FIRE_PENALTY)
+            KheUtilities.lazyKheGetMultString(RANGE_PENALTY,2),
+                KheUtilities.lazyKheGetMultString(COST_MULT,2),
+                KheUtilities.lazyKheGetMultString(FIRE_PENALTY,2)
         );
     }
 

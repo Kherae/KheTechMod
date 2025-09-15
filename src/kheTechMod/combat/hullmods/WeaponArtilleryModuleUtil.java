@@ -105,7 +105,7 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		if(((!(overloadthreshold<=1f))&&index==4)||(index==5)){
 			return "Flux Cost: "+nooppenalty+"% per Base OP. Fluxless: (1-((BaseOP*"+fluxpenaltymult+")/100))x, per weapon";
 		}
-		if (index==4){return Math.round(overloadthreshold*100f)+"%";}
+		if (index==4){return KheUtilities.lazyKheGetPercentString(overloadthreshold*100f);}
 		return "PIGEON";
 	}
 
@@ -210,13 +210,15 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
         if(overloadthreshold<1f){
             tooltip.addPara("Ship overloads when reaching %s flux.",
                     opad,bad,
-                    (int)(Math.round(overloadthreshold*1000f)/10f)+"%"
+                    KheUtilities.lazyKheGetPercentString(overloadthreshold*100f,1)
             );
         }
-        tooltip.addPara("Zero OP flux cost penalty: %s per Base OP, added for all affected weapons.",
-                opad,bad,Math.round(nooppenalty)+"%");
+        tooltip.addPara(
+                "Zero OP flux cost penalty: %s per Base OP, added for all affected weapons.",
+                opad,bad,KheUtilities.lazyKheGetPercentString(nooppenalty,1)
+        );
         tooltip.addPara("Fluxless weapon dissipation penalty: %s per Base OP, multiplicative per weapon",
-                opad,bad,Math.round(fluxpenaltymult)+"%"
+                opad,bad,KheUtilities.lazyKheGetPercentString(nooppenalty,1)
         );
         tooltip.addPara("%s",
                 opad,bad,"Stat UIs may not properly reflect cost increases!"

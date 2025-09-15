@@ -31,9 +31,9 @@ public class PeanutShell extends BaseHullMod {
 	}
 
 	public String getDescriptionParam(int index, HullSize hullSize) {
-		if (index == 0){return KheUtilities.lazyKheGetMultString(BONUS_MULT);}
-		if (index == 1){return KheUtilities.lazyKheGetMultString(PENALTY_MULT);}
-		if (index == 2){return KheUtilities.lazyKheGetMultString(LOGISTICS_MULT);}
+		if (index == 0){return KheUtilities.lazyKheGetMultString(BONUS_MULT,2);}
+		if (index == 1){return KheUtilities.lazyKheGetMultString(PENALTY_MULT,2);}
+		if (index == 2){return KheUtilities.lazyKheGetMultString(LOGISTICS_MULT,2);}
 		return "PIGEON";
 	}
 
@@ -72,8 +72,9 @@ public class PeanutShell extends BaseHullMod {
                 KheUtilities.lazyKheGetMultString(BONUS_MULT),KheUtilities.lazyKheGetMultString(BONUS_MULT));
         tooltip.addPara(
                 "Hull: %s\nTop speed: %s\nTurn speed: %s\nSupply upkeep: %s\nFuel per lightyear: %s\nZero Flux Speed: %s",opad,bad,
-                KheUtilities.lazyKheGetMultString(PENALTY_MULT),KheUtilities.lazyKheGetMultString(PENALTY_MULT),KheUtilities.lazyKheGetMultString(PENALTY_MULT),
-                KheUtilities.lazyKheGetMultString(LOGISTICS_MULT),KheUtilities.lazyKheGetMultString(LOGISTICS_MULT),
+                KheUtilities.lazyKheGetMultString(PENALTY_MULT,2),KheUtilities.lazyKheGetMultString(PENALTY_MULT,2),
+                KheUtilities.lazyKheGetMultString(PENALTY_MULT,2),
+                KheUtilities.lazyKheGetMultString(LOGISTICS_MULT,2),KheUtilities.lazyKheGetMultString(LOGISTICS_MULT,2),
                 KheUtilities.lazyKheGetMultString(0)
         );
     }

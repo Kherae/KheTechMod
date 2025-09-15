@@ -13,7 +13,7 @@ import java.util.Objects;
 import org.apache.log4j.Logger;
 
 public class PhaseStasisCoilsUtil extends BaseHullMod {
-    private static final Logger log = Logger.getLogger(PhaseStasisCoilsUtil.class);
+    public static final Logger log = Logger.getLogger(PhaseStasisCoilsUtil.class);
 //    final static float CLOAK_UPKEEP_MODIFIER =1f;
 //    final static boolean SIMULATE_TIMEFLOW =false;
 //    final static boolean clampTime=false;
@@ -72,7 +72,7 @@ public class PhaseStasisCoilsUtil extends BaseHullMod {
                         float buffer = timeElsewhere;
                         if(clampTime){buffer=Math.max(1f,buffer);}
                         if(timewarpEffectiveness!=1f){buffer=(buffer-1f)*timewarpEffectiveness+1f;}
-                        buffer = Math.round(buffer * 100f) / 100f;
+                        buffer = KheUtilities.lazyKheRounder(buffer,2);
                         if (clampTime) {
                             buffer = Math.max(0, buffer);
                         }
@@ -167,7 +167,7 @@ public class PhaseStasisCoilsUtil extends BaseHullMod {
             if(upkeepModifier>1.0f){upkeepHighlight=bad;}else{upkeepHighlight=good;}
             tooltip.addPara("Phase Cloak Upkeep %s",
                     opad,upkeepHighlight,
-                    "x"+Math.round(upkeepModifier * 100f)/100f +"%"
+                    KheUtilities.lazyKheGetMultString(upkeepModifier,1,true)
             );
         }
         if(threshold){
@@ -178,7 +178,7 @@ public class PhaseStasisCoilsUtil extends BaseHullMod {
             String buffer="Increases and decreases to timeflow are applied to weapons, fighter bays (but not fighters), flux dissipation, and engine and hull repairs at %s of their value";
             if(clampTime){buffer+=", but may not bring the ship below 1.0x timeflow.";}else{buffer+=".";}
             tooltip.addPara(buffer,opad,good,
-                (int)(Math.round(timewarpEffectiveness*1000f)/10f)+"%"
+                KheUtilities.lazyKheGetPercentString(timewarpEffectiveness*100)
             );
         }
 

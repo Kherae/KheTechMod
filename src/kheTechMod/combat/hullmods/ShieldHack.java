@@ -16,8 +16,8 @@ public class ShieldHack extends BaseHullMod {
 	}
 		
 	public String getDescriptionParam(int index, HullSize hullSize) {
-		if(index==0){return KheUtilities.lazyKheGetMultString(SHIELDUNFOLDBOOST);}
-		if(index==1){return KheUtilities.lazyKheGetMultString(SHIELDTURNBOOST);}
+		if(index==0){return KheUtilities.lazyKheGetMultString(SHIELDUNFOLDBOOST,2);}
+		if(index==1){return KheUtilities.lazyKheGetMultString(SHIELDTURNBOOST,2);}
 		return "Fart: "+index;
 	}
 
