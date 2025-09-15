@@ -15,7 +15,7 @@ public class WeaponReplexerBallistic extends WeaponReplexerUtil {
 
 	@Override
 	public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-		valueMath(id,ship, OPMULT, FLUXPENALTYMULT);
+		valueMath(id,ship, OPMULT_SMALL,OPMULT_MEDIUM,OPMULT_LARGE, FLUXPENALTYMULT_SMALL,OPMULT_MEDIUM,OPMULT_LARGE);
 	}
 
 	@Override
@@ -23,9 +23,9 @@ public class WeaponReplexerBallistic extends WeaponReplexerUtil {
 		applyBeforeCreationModifiers(stats,id,COSTREDUCTION,OVERLOADPENALTYMULT);
 	}
 
-	public String getDescriptionParam(int index, HullSize hullSize) {
-		return descParamResolve(index,COSTREDUCTION,OPMULT,FLUXPENALTYMULT,OVERLOADPENALTYMULT);
-	}
+//	public String getDescriptionParam(int index, HullSize hullSize) {
+//		return descParamResolve(index,COSTREDUCTION,OPMULT,FLUXPENALTYMULT,OVERLOADPENALTYMULT);
+//	}
 
 	@Override
 	public String getUnapplicableReason(ShipAPI ship) {
@@ -52,6 +52,6 @@ public class WeaponReplexerBallistic extends WeaponReplexerUtil {
 
     @Override
     public void addPostDescriptionSection(TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec) {
-        tooltipHandler(tooltip,hullSize,ship,width,isForModSpec, Collections.singletonList(getWeaponType()),VALIDSIZES,COSTREDUCTION,OPMULT,OVERLOADPENALTYMULT,FLUXPENALTYMULT);
+        tooltipHandler(tooltip,hullSize,ship,width,isForModSpec, Collections.singletonList(getWeaponType()),VALIDSIZES,COSTREDUCTION,OPMULT_SMALL,OPMULT_MEDIUM,OPMULT_LARGE,OVERLOADPENALTYMULT,FLUXPENALTYMULT_SMALL,FLUXPENALTYMULT_MEDIUM,FLUXPENALTYMULT_LARGE);
     }
 }

@@ -19,8 +19,14 @@ import java.util.List;
 public class WeaponReplexerUtil extends BaseHullMod {
 //	private final Logger log = Logger.getLogger(WeaponReplexerUtil.class);
 	public static final float COSTREDUCTION = 100f;
-	public static final float OPMULT = 1f;
-	public static final float FLUXPENALTYMULT = 1f;
+	//public static final float OPMULT = 1f;
+	public static final float OPMULT_SMALL = 1.5f;
+	public static final float OPMULT_MEDIUM = 1.25f;
+	public static final float OPMULT_LARGE = 1f;
+	//public static final float FLUXPENALTYMULT = 1f;
+    public static final float FLUXPENALTYMULT_LARGE = 1f;
+	public static final float FLUXPENALTYMULT_MEDIUM = 2f;
+	public static final float FLUXPENALTYMULT_SMALL = 3f;
 	public static final float OVERLOADPENALTYMULT = 2f;
 	public static final String REPLEXERNOREMOVALSTRING="Removal would cause OP to exceed maximum by ";
 	public final static List <WeaponAPI.WeaponSize> VALIDSIZES = Arrays.asList(WeaponAPI.WeaponSize.LARGE, WeaponAPI.WeaponSize.MEDIUM, WeaponAPI.WeaponSize.SMALL);
@@ -43,7 +49,13 @@ public class WeaponReplexerUtil extends BaseHullMod {
 		stats.getOverloadTimeMod().modifyMult(id,overloadpenaltymult);
 	}
 
-	public void valueMath(String id,ShipAPI ship, float opMult, float penaltyMult) {
+
+    public void valueMath(String id,ShipAPI ship, float opMult, float penaltyMult) {valueMath(id,ship,opMult,opMult,opMult,penaltyMult,penaltyMult,penaltyMult);}
+    public void valueMath(
+            String id,ShipAPI ship,
+            float opMult_small,float opMult_med,float opMult_large,
+            float penaltyMult_small,float penaltyMult_med,float penaltyMult_large
+    ) {
 		MutableShipStatsAPI stats = ship.getMutableStats();
 		List<WeaponAPI> weaponList=ship.getAllWeapons();
 		float validWeaponModifier=0f;
@@ -51,8 +63,12 @@ public class WeaponReplexerUtil extends BaseHullMod {
 		for (WeaponAPI weaponEntry : weaponList) {
 			if(weaponMatches(weaponEntry,true)){
 				float baseOP=Math.max(0f,weaponEntry.getOriginalSpec().getOrdnancePointCost(null));
+                WeaponAPI.WeaponSize wS = weaponEntry.getSize();
+                float penaltyMult=(wS==WeaponAPI.WeaponSize.LARGE)?penaltyMult_large:((wS==WeaponAPI.WeaponSize.MEDIUM)?penaltyMult_med:penaltyMult_small);
+                float opMult=(wS==WeaponAPI.WeaponSize.LARGE)?opMult_large:((wS==WeaponAPI.WeaponSize.MEDIUM)?opMult_med:opMult_small);
+
 				if(weaponEntry.getFluxCostToFire()<=0f){
-					invalidWeaponModifier*=(1f-(penaltyMult*baseOP*opMult)/100f);
+					invalidWeaponModifier*=(1f-(penaltyMult *baseOP*opMult)/100f);
 				}
 				else{
 					validWeaponModifier += baseOP*opMult;
@@ -76,21 +92,22 @@ public class WeaponReplexerUtil extends BaseHullMod {
 		}
 	}
 
-	public String descParamResolve(int index, float costreduction, float opmult, float fluxpenaltymult, float overloadpenaltymult){
-		if (index==0){return overloadpenaltymult +"x";}
-		if (index==1){
-			String buffer="";
-			if(isBeamMode()) {
-				buffer+="Beam";
-			}else if(getWeaponType()!=null){
-				buffer+=getWeaponType().getDisplayName();
-			}
-			return buffer;
-		}
-		if (index==2){return Math.floor(costreduction)+"";}
-		if (index==3){return "Flux Cost: "+opmult+"% per Base OP. Fluxless: (1-((BaseOP*"+fluxpenaltymult+")/100))x, per weapon.";}
-		return "PIGEON";
-	}
+    //this isnt really used anymore, more of a legacy thing.
+//	public String descParamResolve(int index, float costreduction, float opmult, float fluxpenaltymult, float overloadpenaltymult){
+//		if (index==0){return overloadpenaltymult +"x";}
+//		if (index==1){
+//			String buffer="";
+//			if(isBeamMode()) {
+//				buffer+="Beam";
+//			}else if(getWeaponType()!=null){
+//				buffer+=getWeaponType().getDisplayName();
+//			}
+//			return buffer;
+//		}
+//		if (index==2){return Math.floor(costreduction)+"";}
+//		if (index==3){return "Flux Cost: "+opmult+"% per Base OP. Fluxless: (1-((BaseOP*"+fluxpenaltymult+")/100))x, per weapon.";}
+//		return "PIGEON";
+//	}
 
 	public String unapplicableResolve(ShipAPI ship){
 		if(!applicableResolve(ship)) {
@@ -153,7 +170,8 @@ public class WeaponReplexerUtil extends BaseHullMod {
     public static void tooltipHandler(
             TooltipMakerAPI tooltip, ShipAPI.HullSize hullSize, ShipAPI ship, float width, boolean isForModSpec,
             List<WeaponAPI.WeaponType> validTypes, List<WeaponAPI.WeaponSize> validSizes,
-            float costreduction, float opmult, float overloadpenalty, float fluxpenaltymult
+            float costreduction, float opmult_small,float opmult_med,float opmult_large,
+            float overloadpenalty,float fluxpenaltymult_small,float fluxpenaltymult_med,float fluxpenaltymult_lrg
     ){
         Color bad = Misc.getNegativeHighlightColor();
         Color good = Misc.getHighlightColor();
@@ -176,10 +194,15 @@ public class WeaponReplexerUtil extends BaseHullMod {
         }
 
         tooltip.addSectionHeading("Tech Notes: Ordnance Overload", mid, darkBad, Alignment.MID, opad);
-        tooltip.addPara("Weapon flux cost penalty: %s per Base OP, added for all affected weapons.",
-                opad,bad,Math.round(opmult)+"%");
-        tooltip.addPara("Fluxless weapon dissipation penalty: %s per Base OP, multiplicative per weapon",
-                opad,bad,Math.round(fluxpenaltymult)+"%"
+        tooltip.addPara("Weapon flux cost penalty per Base OP, additive multiplier for all affected weapons:\nSmall: %s\nMedium: %s\nLarge: %s",
+                opad,bad,KheUtilities.lazyKheGetPercentString(opmult_small,2),
+                KheUtilities.lazyKheGetPercentString(opmult_med,2),
+                KheUtilities.lazyKheGetPercentString(opmult_large,2)
+        );
+        tooltip.addPara("Fluxless weapon dissipation penalty per Base OP, multiplicative per weapon:\nSmall: %s\nMedium: %s\nLarge: %s",
+                opad,bad,KheUtilities.lazyKheGetPercentString(fluxpenaltymult_small,2),
+                KheUtilities.lazyKheGetPercentString(fluxpenaltymult_med,2),
+                KheUtilities.lazyKheGetPercentString(fluxpenaltymult_lrg,2)
         );
         tooltip.addPara("%s",
                 opad,bad,"Stat UIs may not properly reflect cost increases!"
