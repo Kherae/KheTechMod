@@ -14,6 +14,8 @@ import com.fs.starfarer.api.loading.WeaponSlotAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import static com.fs.starfarer.api.impl.campaign.skills.FieldRepairsScript.restoreToNonDHull;
@@ -110,16 +112,38 @@ public class KheUtilities {
         return ((base * (1f + stackPercent)) + stackFlat) * stackMult;
     }
 
-    public static String lazyKheGetMultString(float input){return lazyKheGetMultString(input,0f,false);}
-    public static String lazyKheGetMultString(float input,float places){return lazyKheGetMultString(input,places,false);}
-    public static String lazyKheGetMultString(float input,float places,boolean leftSide){
-        String buffer=(Math.round(input*100f*Math.pow(10f,places))/(100f*Math.pow(10f,places)))+"";
+    public static String lazyKheGetMultString(float input){return lazyKheGetMultString(input,0,false);}
+    public static String lazyKheGetMultString(float input,int keepPlaces){return lazyKheGetMultString(input,keepPlaces,false);}
+    public static String lazyKheGetMultString(float input,int keepPlaces,boolean leftSide){
+        String buffer=lazyKheRounderS(input,keepPlaces);
         if(buffer.contains(".")){
             while(buffer.endsWith("0")){buffer=buffer.substring(0,buffer.length()-1);}
         }
         if(buffer.endsWith(".")){buffer=buffer.substring(0,buffer.length()-1);}
         if(leftSide){return "x"+buffer;}
         return buffer+"x";
+    }
+
+    public static String lazyKheGetPercentString(float input){return lazyKheGetPercentString(input,0);}
+    public static String lazyKheGetPercentString(float input,int keepPlaces){
+        String buffer=lazyKheRounderS(input,keepPlaces);
+        if(buffer.contains(".")){
+            while(buffer.endsWith("0")){buffer=buffer.substring(0,buffer.length()-1);}
+        }
+        if(buffer.endsWith(".")){buffer=buffer.substring(0,buffer.length()-1);}
+        return buffer+"%";
+    }
+
+    public static String lazyKheRounderS(float input,int keepPlaces){return(lazyKheRounder(input,keepPlaces))+"";}
+    public static float lazyKheRounder(float input,int keepPlaces){
+//        double tens = Math.pow(10f, keepPlaces);
+//        return(float)(Math.round(input*tens)/tens);
+//    }
+// //https://stackoverflow.com/questions/8911356/whats-the-best-practice-to-round-a-float-to-2-decimals
+//    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(input));
+        bd=bd.setScale(keepPlaces, RoundingMode.HALF_UP);
+        return bd.floatValue();
     }
 
     public static PersonAPI clonePersonForFighter(PersonAPI oldPerson){
