@@ -12,20 +12,21 @@ import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 
-public class KheMeteorDriveSubsystem extends BaseHullMod {
-	public final static float MAINT_PENALTY = 1.2f;
+public class KheLightwaveDriveSubsystem extends BaseHullMod {
+	public final static float MAINT_PENALTY = 1.5f;
 	public final static float SYSTEM_COOLDOWN_PENALTY = 2f;
 	public final static float SYSTEM_FLUX_DISSIPATION_PENALTY = 0f;
 	public final static float WEAPON_REPAIR_TIME_STALL = 100f;
 	public final static float WEAPON_REPAIR_TIME_OVERLOAD = 0.01f;
 
-	//100 was way, way too strong. oneshot a radiant, 90% of an onslaught. 10 is too weak, doesnt even touch armor.
-	// 33 is a nice good number, but still too strong. oneshot an astral. 20 is big chunky..but...eh guess too much.
-	public final static float MASS_MULT = 13f;
+	public final static float ENGINE_REPAIR_TIME_OVERLOAD = 0.01f;
+	public static final float ACCELERATION_MULT = 2f;
+	public static final float TOP_SPEED_MULT = 2f;
+	public static final float ACCELERATION_MULT_PER_SYNERGY = 1f;
+	public static final float TOP_SPEED_MULT_PER_SYNERGY = 1f;
 
-	public final static String myID = "KheMeteorDriveSubsystem";
+	public final static String myID = "KheLightwaveDriveSubsystem";
 	public static final String[] acceptedSystemIDs = {
-			"kheburndrive",
 			"burndrive"
 	};
 	public static final String[] driveSubsystemList = {
@@ -35,18 +36,16 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 			"khelightwavedrivesubsystem"
 	};
 
-	public static class KheMeteorDriveDeepSystem implements AdvanceableListener, HullDamageAboutToBeTakenListener {
+	public static class KheLightwaveDriveDeepSystem implements AdvanceableListener, HullDamageAboutToBeTakenListener {
 		private boolean wasOn = false;
 		private boolean overloaded = false;
-		private boolean invuln = false;
-		private float massStart;
 
 		public final ShipAPI ship;
 		public final ShipSystemAPI shipSystem;
 		public final boolean validShipSystem;
 		public final int synergyLevel;
 
-		public KheMeteorDriveDeepSystem(ShipAPI ship) {
+		public KheLightwaveDriveDeepSystem(ShipAPI ship) {
 			int synergyLevel = 0;
 			for (String idToCheck : driveSubsystemList) {
 				if (KheUtilities.shipHasHullmod(ship, idToCheck)) {
@@ -70,47 +69,20 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 				MutableShipStatsAPI stats = ship.getMutableStats();
 				ShipSystemAPI.SystemState systemState = shipSystem.getState();
 
-				float jitterLevel = 0f;
-				float jitterRangeBonus = 0f;
-				float darkenMult = 0.5f;
-				if (systemState.equals(ShipSystemAPI.SystemState.IN)) {
-					jitterLevel = 1f;
-				} else if (systemState.equals(ShipSystemAPI.SystemState.ACTIVE)) {
-					jitterRangeBonus = 10f;
-					jitterLevel = 1f;
-					darkenMult = 1f;
-				} else if (systemState.equals(ShipSystemAPI.SystemState.OUT)) {
-					jitterLevel = 1f;
-				}
-
-				int[] engineColor = KheUtilities.getAverageEngineColor(ship);
-				engineColor[3] = (int) Math.floor(engineColor[3] * darkenMult);
-				Color testJitterUnder = KheUtilities.iArrayToColor(engineColor);
-				engineColor[3] = (int) Math.floor((float) engineColor[3] / 2f);
-				Color testJitterOver = KheUtilities.iArrayToColor(engineColor);
-				jitterLevel = (float) Math.sqrt(jitterLevel);
-
-				if (synergyLevel < 2) {
-					ship.setJitter(this, testJitterOver, jitterLevel, 3, 0, 0 + jitterRangeBonus);
-				}
-				ship.setJitterUnder(this, testJitterUnder, jitterLevel, 25, 0f, 7f + jitterRangeBonus * synergyLevel);
-
 				if (shipSystem.isOn()) {
 					if (synergyLevel < 2) {
 						stats.getFluxDissipation().modifyMult(myID, SYSTEM_FLUX_DISSIPATION_PENALTY);
 					}
-					if (systemState.equals(ShipSystemAPI.SystemState.IN)) {
-						if (!invuln) {
-							invuln = KheUtilities.handleInvuln(myID, true, stats);
-						}
-					} else if (systemState.equals(ShipSystemAPI.SystemState.ACTIVE)) {
+
+					stats.getAllowZeroFluxAtAnyLevel().modifyFlat(myID, 1);
+					stats.getMaxSpeed().modifyMult(myID, TOP_SPEED_MULT + (TOP_SPEED_MULT_PER_SYNERGY * synergyLevel));
+					stats.getAcceleration().modifyMult(myID, ACCELERATION_MULT + (ACCELERATION_MULT_PER_SYNERGY * synergyLevel));
+
+					ship.getEngineController().extendFlame(this, 4, 5, 3);
+
+					if (systemState.equals(ShipSystemAPI.SystemState.ACTIVE)) {
 						if (!wasOn) {
 							wasOn = true;
-
-							massStart = ship.getMass();
-							ship.setMass(massStart * MASS_MULT);
-
-							ship.setOverloadColor(testJitterUnder);
 
 							stats.getCombatWeaponRepairTimeMult().modifyMult(myID, WEAPON_REPAIR_TIME_STALL);
 							for (WeaponAPI weapon : ship.getAllWeapons()) {
@@ -129,21 +101,13 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 					if (synergyLevel < 2) {
 						ship.getEngineController().forceFlameout();
 					}
-
-					ship.setMass(massStart);
-
-					if (invuln) {
-						invuln = KheUtilities.handleInvuln(myID, false, stats);
-					}
-				} else if (invuln) {
-					invuln = KheUtilities.handleInvuln(myID, false, stats);
 				} else if (ship.getFluxTracker().isOverloaded()) {
 					if (overloaded) {
 						if (synergyLevel < 2) {
 							stats.getFluxDissipation().modifyMult(myID, SYSTEM_FLUX_DISSIPATION_PENALTY);
 						}
-
 						stats.getCombatWeaponRepairTimeMult().modifyMult(myID, WEAPON_REPAIR_TIME_OVERLOAD);
+						stats.getCombatEngineRepairTimeMult().modifyMult(myID, ENGINE_REPAIR_TIME_OVERLOAD);
 					}
 				} else if (ship.getFluxTracker().isVenting()) {
 					stats.getFluxDissipation().unmodify(myID);
@@ -159,6 +123,11 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 
 					stats.getFluxDissipation().unmodify(myID);
 
+					stats.getAllowZeroFluxAtAnyLevel().unmodify(myID);
+					stats.getMaxSpeed().unmodify(myID);
+					stats.getAcceleration().unmodify(myID);
+					stats.getCombatEngineRepairTimeMult().unmodify(myID);
+
 					if (synergyLevel >= 2) {
 						for (ShipEngineControllerAPI.ShipEngineAPI engine : ship.getEngineController().getShipEngines()) {
 							if (engine.isDisabled() && (!engine.isPermanentlyDisabled())) {
@@ -167,7 +136,6 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 						}
 					}
 
-					ship.resetOverloadColor();
 					overloaded = false;
 				}
 			}
@@ -181,7 +149,7 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 
 	@Override
 	public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
-		ship.addListener(new KheMeteorDriveSubsystem.KheMeteorDriveDeepSystem(ship));
+		ship.addListener(new KheLightwaveDriveSubsystem.KheLightwaveDriveDeepSystem(ship));
 		int synergyLevel = 0;
 		for (String idToCheck : driveSubsystemList) {
 			if (KheUtilities.shipHasHullmod(ship, idToCheck)) {
@@ -215,9 +183,11 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 				KheUtilities.lazyKheGetMultString(MAINT_PENALTY)
 		);
 		tooltip.addSectionHeading("Burn Drive Stats", Alignment.MID, opad);
-		tooltip.addPara("Ship Is %s\nMass: %s",
-				opad, good, "Invulnerable",
-				KheUtilities.lazyKheGetMultString(MASS_MULT)
+		tooltip.addPara("Top speed: %s\n" +
+						"Acceleration: %s",
+				opad, good,
+				KheUtilities.lazyKheGetMultString(TOP_SPEED_MULT + (TOP_SPEED_MULT_PER_SYNERGY * synergyLevel)),
+				KheUtilities.lazyKheGetMultString(ACCELERATION_MULT + (ACCELERATION_MULT_PER_SYNERGY * synergyLevel))
 		);
 		if (synergyLevel >= 2) {
 			tooltip.addPara("Weapon Repair Time: %s",
@@ -232,14 +202,15 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 			);
 		}
 		tooltip.addSectionHeading("Burn Drive Overload Stats", Alignment.MID, opad);
-		if (synergyLevel >= 2) {
+		if (synergyLevel > 1) {
 			tooltip.addPara("Subsystem Harmonization: %s\nWeapon Repair Time: %s\nEngine Repair Time: %s",
 					opad, good, "No Overload", "Instant", "Instant"
 			);
 		} else {
-			tooltip.addPara("Weapon Repair Time: %s",
+			tooltip.addPara("Weapon Repair Time: %s\nEngine Repair Time",
 					opad, good,
-					KheUtilities.lazyKheGetMultString(WEAPON_REPAIR_TIME_OVERLOAD)
+					KheUtilities.lazyKheGetMultString(WEAPON_REPAIR_TIME_OVERLOAD),
+					KheUtilities.lazyKheGetMultString(ENGINE_REPAIR_TIME_OVERLOAD)
 			);
 			tooltip.addPara("Flux Dissipation: %s",
 					opad, bad,
@@ -257,6 +228,13 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 			return false;
 		}
 		if (!KheUtilities.stringArrayContains(acceptedSystemIDs, ship.getSystem().getId())) {
+			return false;
+		}
+		ShipAPI.HullSize size = ship.getHullSize();
+		if ((size != ShipAPI.HullSize.FRIGATE) && (size != ShipAPI.HullSize.DESTROYER)) {
+			return false;
+		}
+		if (ship.getMass() >= 1000f) {
 			return false;
 		}
 		if (KheUtilities.isPhaseShip(ship, true, true, false)) {
@@ -278,6 +256,13 @@ public class KheMeteorDriveSubsystem extends BaseHullMod {
 		}
 		if (!KheUtilities.stringArrayContains(acceptedSystemIDs, ship.getSystem().getId())) {
 			return "Ship does not have Burn Drive.";
+		}
+		ShipAPI.HullSize size = ship.getHullSize();
+		if ((size != ShipAPI.HullSize.FRIGATE) && (size != ShipAPI.HullSize.DESTROYER)) {
+			return "Can only be installed on Frigates or Destroyers.";
+		}
+		if (ship.getMass() >= 1000f) {
+			return "Ship has too much mass.";
 		}
 		//too unbalanced otherwise...
 		boolean isPhase = KheUtilities.isPhaseShip(ship, true, true, true);
