@@ -20,6 +20,9 @@ public class KheCombatListener implements FleetEventListener {
 				if (loser.getFaction().getId().equals(Factions.OMEGA)) {
 					Global.getSector().getMemoryWithoutUpdate().set("$defeated_omega", true);
 				}
+                if (loser.getFaction().getId().equals(Factions.REMNANTS)) {
+                    Global.getSector().getMemoryWithoutUpdate().set("$defeated_remnant", true);
+                }
 			}
 		}
 	}
