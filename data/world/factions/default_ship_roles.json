@@ -1,15 +1,24 @@
 {
-	"phaseLarge":{
-		"khe_tesseract_Assaulter":1,
-		"khe_tesseract_Disruptor":1,
-		"khe_tesseract_Lancer":1,
-		"khe_tesseract_Strike":1
+	"combatCapital": {
+		"khe_catslaught_Standard":0.4,
+		"khe_catslaught_Outdated":0.4,
+		"khe_catslaught_Elite":0.2
 	},
-	"combatMedium":{
-		"khe_facet_Strike":1,
-		"khe_facet_Peanut":1
+	"phaseLarge": {
+		"khe_tesseract_Assaulter": 0.1,
+		"khe_tesseract_Disruptor": 0.1,
+		"khe_tesseract_Lancer": 0.1,
+		"khe_tesseract_Strike": 0.1
 	},
-	"combatSmall":{
-		"khe_vanguard_Strike":0.5
+	"carrierLarge": {
+		"khe_legion_xiv_Elite":0.1
+	},
+	"combatMedium": {
+		"khe_facet_Strike": 0.1,
+		"khe_facet_Peanut": 0.1,
+		"khe_berserker_Assault": 0.1
+	},
+	"combatSmall": {
+		"khe_vanguard_Strike": 0.5
 	}
 }
