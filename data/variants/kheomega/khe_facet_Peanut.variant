@@ -1,50 +1,52 @@
 {
-    "displayName": "Bulwark",
-    "fluxCapacitors": 0,
-    "fluxVents": 0,
-    "goalVariant": true,
-    "hullId": "khe_facet",
-    "hullMods": [
-        "pointdefenseai",
-        "heavyarmor",
-        "reinforcedhull",
-        "turretgyros",
-        "armoredweapons"
-    ],
-    "permaMods": [],
-    "sMods": [],
-    "variantId": "khe_facet_Peanut",
-    "weaponGroups": [
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {"WS 000": "cryoflux"}
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 001": "riftlance",
-                "WS 002": "riftlance"
-            }
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 003": "riftbeam",
-                "WS 004": "riftbeam"
-            }
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 005": "shockrepeater",
-                "WS 006": "shockrepeater",
-                "WS 007": "shockrepeater",
-                "WS 008": "shockrepeater"
-            }
-        }
-    ]
+	"displayName": "Bulwark",
+	"fluxCapacitors": 0,
+	"fluxVents": 0,
+	"goalVariant": true,
+	"hullId": "khe_facet",
+	"hullMods": [
+		"pointdefenseai",
+		"heavyarmor",
+		"reinforcedhull",
+		"turretgyros",
+		"armoredweapons"
+	],
+	"permaMods": [],
+	"sMods": [],
+	"variantId": "khe_facet_Peanut",
+	"weaponGroups": [
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 000": "cryoflux"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 001": "riftlance",
+				"WS 002": "riftlance"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 003": "riftbeam",
+				"WS 004": "riftbeam"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 005": "shockrepeater",
+				"WS 006": "shockrepeater",
+				"WS 007": "shockrepeater",
+				"WS 008": "shockrepeater"
+			}
+		}
+	]
 }

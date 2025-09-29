@@ -1,46 +1,50 @@
 package kheTechMod.combat.hullmods;
 
-import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.combat.BaseHullMod;
+import com.fs.starfarer.api.combat.MutableShipStatsAPI;
+import com.fs.starfarer.api.combat.ShipAPI;
 
 public class HardfluxEMPCoils extends BaseHullMod {
-    public static final String myID="khehardfluxshield";
-    public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-        return "PIGEON";
-    }
+	public static final String myID = "khehardfluxshield";
 
-    public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
-        stats.getHardFluxDissipationFraction().modifyMult(id, 0f);
-    }
+	public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
+		return "PIGEON";
+	}
 
-    @Override
-    public void advanceInCombat(ShipAPI ship, float amount) {
-        if (!ship.isAlive()) return;
-        float hardFlux=ship.getFluxTracker().getHardFlux();
-        ship.getMutableStats().getEmpDamageTakenMult().unmodify(myID);
-        ship.getMutableStats().getEmpDamageTakenMult().modifyFlat(myID,hardFlux);
-        if (ship.isPhased()) {
-            ship.getMutableStats().getPhaseCloakUpkeepCostBonus().modifyPercent(myID, hardFlux*100f);
-        }
-        else {
-            ship.getMutableStats().getPhaseCloakUpkeepCostBonus().unmodify(myID);
-        }
-    }
+	public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
+		stats.getHardFluxDissipationFraction().modifyMult(id, 0f);
+	}
 
-    @Override
-    public String getUnapplicableReason(ShipAPI ship) {
-        if (ship==null){return null;}
-        boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,false);
-        boolean isShielded=KheUtilities.isShielded(ship,true,false);
-        if (!(isPhase||isShielded)) {
-            return "Ship has no shields and does not phase.";
-        }
-        return null;
-    }
+	@Override
+	public void advanceInCombat(ShipAPI ship, float amount) {
+		if (!ship.isAlive()) return;
+		float hardFlux = ship.getFluxTracker().getHardFlux();
+		ship.getMutableStats().getEmpDamageTakenMult().unmodify(myID);
+		ship.getMutableStats().getEmpDamageTakenMult().modifyFlat(myID, hardFlux);
+		if (ship.isPhased()) {
+			ship.getMutableStats().getPhaseCloakUpkeepCostBonus().modifyPercent(myID, hardFlux * 100f);
+		} else {
+			ship.getMutableStats().getPhaseCloakUpkeepCostBonus().unmodify(myID);
+		}
+	}
 
-    @Override
-    public boolean isApplicableToShip(ShipAPI ship) {
-        boolean isPhase=KheUtilities.isPhaseShip(ship,true,true,false);
-        boolean isShielded=KheUtilities.isShielded(ship,true,false);
-        return (isPhase || isShielded);
-    }
+	@Override
+	public String getUnapplicableReason(ShipAPI ship) {
+		if (ship == null) {
+			return null;
+		}
+		boolean isPhase = KheUtilities.isPhaseShip(ship, true, true, false);
+		boolean isShielded = KheUtilities.isShielded(ship, true, false);
+		if (!(isPhase || isShielded)) {
+			return "Ship has no shields and does not phase.";
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isApplicableToShip(ShipAPI ship) {
+		boolean isPhase = KheUtilities.isPhaseShip(ship, true, true, false);
+		boolean isShielded = KheUtilities.isShielded(ship, true, false);
+		return (isPhase || isShielded);
+	}
 }

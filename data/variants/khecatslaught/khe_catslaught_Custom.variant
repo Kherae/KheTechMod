@@ -1,0 +1,88 @@
+{
+	"displayName": "Custom",
+	"fluxCapacitors": 0,
+	"fluxVents": 55,
+	"hullId": "khe_catslaught",
+	"hullMods": [
+		"khereplexerballistic",
+		"targetingunit",
+		"heavyarmor",
+		"kheventhack",
+		"auxiliarythrusters",
+		"armoredweapons",
+		"turretgyros",
+		"converted_hangar",
+		"khemeteordrivesubsystem",
+		"fluxbreakers",
+		"fluxdistributor"
+	],
+	"sMods": [
+		"autorepair",
+		"insulatedengine",
+		"reinforcedhull"
+	],
+	"sModdedBuiltIns": [
+		"shield_shunt"
+	],
+	"permaMods": [],
+	"variantId": "khe_catslaught_Custom",
+	"weaponGroups": [
+		{
+			"autofire": false,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 016": "tpc",
+				"WS 017": "tpc"
+			}
+		},
+		{
+			"autofire": false,
+			"mode": "ALTERNATING",
+			"weapons": {
+				"WS 021": "sabotpod",
+				"WS 022": "sabotpod",
+				"WS 023": "sabotpod",
+				"WS 024": "sabotpod"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 012": "hveldriver",
+				"WS 013": "hveldriver",
+				"WS 014": "arbalest",
+				"WS 015": "arbalest"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 019": "multineedler"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 001": "flak",
+				"WS 002": "vulcan",
+				"WS 003": "flak",
+				"WS 004": "vulcan",
+				"WS 005": "vulcan",
+				"WS 006": "vulcan",
+				"WS 007": "dualflak",
+				"WS 008": "vulcan",
+				"WS 009": "vulcan",
+				"WS 010": "flak",
+				"WS 011": "flak",
+				"WS 018": "devastator",
+				"WS 020": "devastator"
+			}
+		}
+	],
+	"wings": [
+		"trident_wing"
+	]
+}

@@ -1,43 +1,45 @@
 {
-    "displayName": "Strike",
-    "fluxCapacitors": 0,
-    "fluxVents": 0,
-    "goalVariant": true,
-    "hullId": "khe_vanguard",
-    "hullMods": [],
-    "permaMods": [],
-    "sMods": [],
-    "variantId": "khe_vanguard_Strike",
-    "weaponGroups": [
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 005": "lightneedler",
-                "WS 006": "lightneedler"
-            }
-        },
-        {
-            "autofire": false,
-            "mode": "ALTERNATING",
-            "weapons": {
-                "WS 000": "reaper",
-                "WS 001": "reaper",
-                "WS 002": "reaper"
-            }
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {"WS 007": "lightag"}
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 003": "vulcan",
-                "WS 004": "vulcan"
-            }
-        }
-    ]
+	"displayName": "Strike",
+	"fluxCapacitors": 0,
+	"fluxVents": 0,
+	"goalVariant": true,
+	"hullId": "khe_vanguard",
+	"hullMods": [],
+	"permaMods": [],
+	"sMods": [],
+	"variantId": "khe_vanguard_Strike",
+	"weaponGroups": [
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 005": "lightneedler",
+				"WS 006": "lightneedler"
+			}
+		},
+		{
+			"autofire": false,
+			"mode": "ALTERNATING",
+			"weapons": {
+				"WS 000": "reaper",
+				"WS 001": "reaper",
+				"WS 002": "reaper"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 007": "lightag"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 003": "vulcan",
+				"WS 004": "vulcan"
+			}
+		}
+	]
 }

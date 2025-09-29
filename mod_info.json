@@ -1,19 +1,18 @@
 {
-  "id": "khe_tech", # For the convenience of troubleshooters, include your name and the mod name, not just an acronym.
-  "name": "Khe's Tech", # Displayed to the player
+  "id": "khe_tech",
+  "name": "Khe's Tech",
   "author": "Khe",
   "utility": false,
-  "version": { "major": '1', "minor": '0', "patch": '3' },
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 3
+  },
   "description": "Adds whatever the mew wants.",
   "gameVersion": "0.98a-RC8",
-  "jars": [ "jars/KheTech.jar" ],
-  "modPlugin": "kheTechMod.KheTechMain",
-  "dependencies": [
-    #this is only actually needed for the bounty script, which is only called if this mod is enabled to begin with. so, soft dependency, not required.
-    #{
-    #    "id": "MagicLib",
-    #    "name": "MagicLib",
-    #    #"version": "3.0"
-    #}
+  "jars": [
+    "jars/KheTech.jar"
   ],
+  "modPlugin": "kheTechMod.KheTechMain",
+  "dependencies": []
 }

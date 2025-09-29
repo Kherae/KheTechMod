@@ -98,3 +98,12 @@ this stuff is..potentially heavy processing wise? not sure I want to use it.
 //        }
 //        return currentOPBuffer;
 //    }
+
+
+    //this one is frankly too generous for what I need, but I have it for if I need it.
+    //https://www.wolframalpha.com/input?i=y%3D%282*sqrt%28abs%28x%29%29%29%5E%281%2Fabs%28x%29%29%2C+y%3D+%28%282*sqrt%28abs%28x%29%29%29%5E%281%2Fabs%28x%29%29%29%5Eabs%28x%29
+    //where input=2,scalar=x
+    //f(1)=2,f(1)^1=2;f(2)=1.75ish, f(2)^2=2.8ish,f(3)=1.5ish,f(3)^3=3.4ish
+//    public static float multiModScalarHeadache(float input,int scalar) {
+//        return (float)Math.pow(input*(float)Math.sqrt(scalar),(float) 1 /scalar);
+//    }

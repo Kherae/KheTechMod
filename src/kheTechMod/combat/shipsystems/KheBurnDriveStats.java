@@ -13,15 +13,16 @@ public class KheBurnDriveStats extends BaseShipSystemScript {
 			//stats.getAcceleration().modifyPercent(id, 200f * effectLevel);
 		}
 	}
+
 	public void unapply(MutableShipStatsAPI stats, String id) {
 		stats.getMaxSpeed().unmodify(id);
 		stats.getAcceleration().unmodify(id);
 
 		stats.getDeceleration().unmodify(id);
-        stats.getMaxTurnRate().unmodify(id);
-        stats.getTurnAcceleration().unmodify(id);
+		stats.getMaxTurnRate().unmodify(id);
+		stats.getTurnAcceleration().unmodify(id);
 	}
-	
+
 	public StatusData getStatusData(int index, State state, float effectLevel) {
 		if (index == 0) {
 			return new StatusData("increased engine power", false);

@@ -1,10 +1,9 @@
 {
-	"plugins":{
-		 "KheTimeCleanup":"kheTechMod.combat.plugins.KheTimeCleanup"
+	"plugins": {
+		"KheTimeCleanup": "kheTechMod.combat.plugins.KheTimeCleanup"
 	},
-    "ruleCommandPackages":[
-      "kheTechMod.campaign.bountyrules"
-    ],
-
-  "drop_prob_officer_khe_warped_omega_core":0.0
+	"ruleCommandPackages": [
+		"kheTechMod.campaign.bountyrules"
+	],
+	"drop_prob_officer_khe_warped_omega_core": 0.0
 }

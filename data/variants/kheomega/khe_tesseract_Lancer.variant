@@ -1,52 +1,54 @@
 {
-    "displayName": "Lancer",
-    "fluxCapacitors": 0,
-    "fluxVents": 1,
-    "goalVariant": true,
-    "hullId": "khe_tesseract",
-    "hullMods": [],
-    "permaMods": [],
-    "sMods": [],
-    "variantId": "khe_tesseract_Lancer",
-    "weaponGroups": [
-        {
-            "autofire": false,
-            "mode": "LINKED",
-            "weapons": {
+	"displayName": "Lancer",
+	"fluxCapacitors": 0,
+	"fluxVents": 1,
+	"goalVariant": true,
+	"hullId": "khe_tesseract",
+	"hullMods": [],
+	"permaMods": [],
+	"sMods": [],
+	"variantId": "khe_tesseract_Lancer",
+	"weaponGroups": [
+		{
+			"autofire": false,
+			"mode": "LINKED",
+			"weapons": {
 				"WS 009": "riftcascade"
 			}
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 007": "riftbeam",
-                "WS 010": "riftbeam",
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 007": "riftbeam",
+				"WS 010": "riftbeam",
 				"WS 006": "riftbeam"
-            }
-        },
-        {
-            "autofire": false,
-            "mode": "LINKED",
-            "weapons": {"WS 008": "cryoflux"}
-        },
-        {
-            "autofire": true,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 001": "shockrepeater",
-                "WS 002": "shockrepeater",
-                "WS 003": "shockrepeater",
-                "WS 004": "shockrepeater"
-            }
-        },
-        {
-            "autofire": false,
-            "mode": "LINKED",
-            "weapons": {
-                "WS 000": "riftlance",
-                "WS 005": "riftlance"
-            }
-        }
-    ]
+			}
+		},
+		{
+			"autofire": false,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 008": "cryoflux"
+			}
+		},
+		{
+			"autofire": true,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 001": "shockrepeater",
+				"WS 002": "shockrepeater",
+				"WS 003": "shockrepeater",
+				"WS 004": "shockrepeater"
+			}
+		},
+		{
+			"autofire": false,
+			"mode": "LINKED",
+			"weapons": {
+				"WS 000": "riftlance",
+				"WS 005": "riftlance"
+			}
+		}
+	]
 }

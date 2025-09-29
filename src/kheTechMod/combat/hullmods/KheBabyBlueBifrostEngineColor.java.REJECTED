@@ -1,0 +1,23 @@
+//cant figure out how to make it work in a way that I can get the drive subsystems to pick up on.
+//Bifrost Baby Blue,khebabybluebifrostenginecolor,,,,,,0,,TRUE,TRUE,0,0,0,0,kheTechMod.combat.hullmods.KheBabyBlueBifrostEngineColor,Should not see this. This makes baby bifrost’s trail blue.,Should not see this.,,
+
+package kheTechMod.combat.hullmods;
+
+import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.util.ColorShifterAPI;
+
+import java.awt.*;
+
+public class KheBabyBlueBifrostEngineColor extends BaseHullMod {
+    //r: 137, g: 207, b: 240//baby blue
+    private final Color color = new Color(137,207,240,125);
+
+    @Override
+	public void advanceInCombat(ShipAPI ship, float amount) {
+        ShipEngineControllerAPI eCon = ship.getEngineController();
+//        ColorShifterAPI eShift = eCon.getFlameColorShifter();
+//        eShift.shift(this,color,1f,1f,1f);
+//        eShift.setBase(color);
+		eCon.fadeToOtherColor(this, color, null, 1f, 0.8f);
+	}
+}
