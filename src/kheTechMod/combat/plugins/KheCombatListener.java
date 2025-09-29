@@ -11,7 +11,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 @SuppressWarnings("unused")
 public class KheCombatListener implements FleetEventListener {
 	@Override
-	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {}
+	public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
+	}
 
 	@Override
 	public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) {
@@ -20,9 +21,9 @@ public class KheCombatListener implements FleetEventListener {
 				if (loser.getFaction().getId().equals(Factions.OMEGA)) {
 					Global.getSector().getMemoryWithoutUpdate().set("$defeated_omega", true);
 				}
-                if (loser.getFaction().getId().equals(Factions.REMNANTS)) {
-                    Global.getSector().getMemoryWithoutUpdate().set("$defeated_remnant", true);
-                }
+				if (loser.getFaction().getId().equals(Factions.REMNANTS)) {
+					Global.getSector().getMemoryWithoutUpdate().set("$defeated_remnant", true);
+				}
 			}
 		}
 	}
