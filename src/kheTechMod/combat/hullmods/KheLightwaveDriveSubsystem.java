@@ -1,24 +1,17 @@
 package kheTechMod.combat.hullmods;
 
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.combat.*;
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.combat.MutableShipStatsAPI;
+import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
-import com.fs.starfarer.api.combat.listeners.HullDamageAboutToBeTakenListener;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 
-public class KheLightwaveDriveSubsystem extends BaseHullMod {
-	public final static float MAINT_PENALTY = 1.5f;
-	public final static float SYSTEM_COOLDOWN_PENALTY = 2f;
-	public final static float SYSTEM_FLUX_DISSIPATION_PENALTY = 0f;
-	public final static float WEAPON_REPAIR_TIME_STALL = 100f;
-	public final static float WEAPON_REPAIR_TIME_OVERLOAD = 0.01f;
-
+public class KheLightwaveDriveSubsystem extends KheDriveSubsystemBase {
 	public final static float ENGINE_REPAIR_TIME_OVERLOAD = 0.01f;
 	public static final float ACCELERATION_MULT = 2f;
 	public static final float TOP_SPEED_MULT = 2f;
@@ -29,14 +22,9 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 	public static final String[] acceptedSystemIDs = {
 			"burndrive"
 	};
-	public static final String[] driveSubsystemList = {
-			"khemeteordrivesubsystem",
-			"khephasedrivesubsystem",
-			"kheglaredrivesubsystem",
-			"khelightwavedrivesubsystem"
-	};
 
-	public static class KheLightwaveDriveDeepSystem implements AdvanceableListener, HullDamageAboutToBeTakenListener {
+	public static class KheLightwaveDriveDeepSystem implements AdvanceableListener {
+		private boolean started = false;
 		private boolean wasOn = false;
 		private boolean overloaded = false;
 
@@ -46,21 +34,10 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 		public final int synergyLevel;
 
 		public KheLightwaveDriveDeepSystem(ShipAPI ship) {
-			int synergyLevel = 0;
-			for (String idToCheck : driveSubsystemList) {
-				if (KheUtilities.shipHasHullmod(ship, idToCheck)) {
-					synergyLevel++;
-				}
-			}
-			this.synergyLevel = Math.max(synergyLevel, 1);
+			this.synergyLevel = getSynergyLevel(ship);
 			this.ship = ship;
 			this.shipSystem = ship.getSystem();
 			this.validShipSystem = KheUtilities.stringArrayContains(acceptedSystemIDs, (this.shipSystem) != null ? this.shipSystem.getId() : "");
-		}
-
-		//black magic. I don't wanna remove it since for some reason everything falls apart if I do.
-		public boolean notifyAboutToTakeHullDamage(Object param, ShipAPI ship, Vector2f point, float damageAmount) {
-			return false;
 		}
 
 		@Override
@@ -70,25 +47,30 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 				ShipSystemAPI.SystemState systemState = shipSystem.getState();
 
 				if (shipSystem.isOn()) {
-					if (synergyLevel < 2) {
-						stats.getFluxDissipation().modifyMult(myID, SYSTEM_FLUX_DISSIPATION_PENALTY);
+					if (systemState.equals(ShipSystemAPI.SystemState.IN)) {
+						if (!started) {
+							if (synergyLevel < 2) {
+								stats.getFluxDissipation().modifyMult(myID, SYSTEM_FLUX_DISSIPATION_PENALTY);
+							}
+
+							stats.getAllowZeroFluxAtAnyLevel().modifyFlat(myID, 1);
+							stats.getMaxSpeed().modifyMult(myID, TOP_SPEED_MULT + (TOP_SPEED_MULT_PER_SYNERGY * synergyLevel));
+							stats.getAcceleration().modifyMult(myID, ACCELERATION_MULT + (ACCELERATION_MULT_PER_SYNERGY * synergyLevel));
+
+							started = true;
+						}
 					}
-
-					stats.getAllowZeroFluxAtAnyLevel().modifyFlat(myID, 1);
-					stats.getMaxSpeed().modifyMult(myID, TOP_SPEED_MULT + (TOP_SPEED_MULT_PER_SYNERGY * synergyLevel));
-					stats.getAcceleration().modifyMult(myID, ACCELERATION_MULT + (ACCELERATION_MULT_PER_SYNERGY * synergyLevel));
-
 					ship.getEngineController().extendFlame(this, 4, 5, 3);
 
 					if (systemState.equals(ShipSystemAPI.SystemState.ACTIVE)) {
 						if (!wasOn) {
 							wasOn = true;
-
-							stats.getCombatWeaponRepairTimeMult().modifyMult(myID, WEAPON_REPAIR_TIME_STALL);
-							for (WeaponAPI weapon : ship.getAllWeapons()) {
-								weapon.disable();
-							}
 						}
+
+						Global.getCombatEngine().maintainStatusForPlayerShip(
+								STATUS_KEY, shipSystem.getSpecAPI().getIconSpriteName(), "BURN DRIVE SUBSYSTEM", "WEAPONS DISABLED", true
+						);
+						KheUtilities.setForceNoFireOneFrame(ship);
 					}
 				} else if (wasOn) {
 					wasOn = false;
@@ -106,58 +88,48 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 						if (synergyLevel < 2) {
 							stats.getFluxDissipation().modifyMult(myID, SYSTEM_FLUX_DISSIPATION_PENALTY);
 						}
-						stats.getCombatWeaponRepairTimeMult().modifyMult(myID, WEAPON_REPAIR_TIME_OVERLOAD);
 						stats.getCombatEngineRepairTimeMult().modifyMult(myID, ENGINE_REPAIR_TIME_OVERLOAD);
 					}
 				} else if (ship.getFluxTracker().isVenting()) {
-					stats.getFluxDissipation().unmodify(myID);
-				} else if (overloaded) {
-					if (synergyLevel >= 2) {
-						for (WeaponAPI weapon : ship.getAllWeapons()) {
-							if (weapon.isDisabled()) {
-								weapon.repair();
-							}
-						}
+					if (synergyLevel < 2) {
+						stats.getFluxDissipation().unmodify(myID);
 					}
-					stats.getCombatWeaponRepairTimeMult().unmodify(myID);
-
-					stats.getFluxDissipation().unmodify(myID);
+				} else if (overloaded) {
+					if (synergyLevel < 2) {
+						stats.getFluxDissipation().unmodify(myID);
+					}
 
 					stats.getAllowZeroFluxAtAnyLevel().unmodify(myID);
 					stats.getMaxSpeed().unmodify(myID);
 					stats.getAcceleration().unmodify(myID);
 					stats.getCombatEngineRepairTimeMult().unmodify(myID);
 
+					started = false;
+
 					if (synergyLevel >= 2) {
-						for (ShipEngineControllerAPI.ShipEngineAPI engine : ship.getEngineController().getShipEngines()) {
-							if (engine.isDisabled() && (!engine.isPermanentlyDisabled())) {
-								engine.repair();
-							}
-						}
+						KheUtilities.safeRepairAllEngines(ship);
 					}
 
 					overloaded = false;
+				} else if (started) {
+					started = false;
+
+					stats.getAllowZeroFluxAtAnyLevel().unmodify(myID);
+					stats.getMaxSpeed().unmodify(myID);
+					stats.getAcceleration().unmodify(myID);
+
+					if (synergyLevel < 2) {
+						stats.getFluxDissipation().unmodify(myID);
+					}
 				}
 			}
 		}
 	}
 
 	@Override
-	public void applyEffectsBeforeShipCreation(ShipAPI.HullSize hullSize, MutableShipStatsAPI stats, String id) {
-		stats.getSuppliesPerMonth().modifyMult(id, MAINT_PENALTY);
-	}
-
-	@Override
 	public void applyEffectsAfterShipCreation(ShipAPI ship, String id) {
 		ship.addListener(new KheLightwaveDriveSubsystem.KheLightwaveDriveDeepSystem(ship));
-		int synergyLevel = 0;
-		for (String idToCheck : driveSubsystemList) {
-			if (KheUtilities.shipHasHullmod(ship, idToCheck)) {
-				synergyLevel++;
-			}
-		}
-		synergyLevel = Math.max(synergyLevel, 1);
-		ship.getMutableStats().getSystemCooldownBonus().modifyMult(id, KheUtilities.multiModScalarHeadache(SYSTEM_COOLDOWN_PENALTY, synergyLevel));
+		super.applyEffectsAfterShipCreation(ship, id);
 	}
 
 	@Override
@@ -168,13 +140,7 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 		Color good = Misc.getHighlightColor();
 		float opad = 10f;
 
-		int synergyLevel = 0;
-		for (String idToCheck : driveSubsystemList) {
-			if (KheUtilities.shipHasHullmod(ship, idToCheck)) {
-				synergyLevel++;
-			}
-		}
-		synergyLevel = Math.max(synergyLevel, 1);
+		int synergyLevel = getSynergyLevel(ship);
 
 		tooltip.addSectionHeading("Stats", Alignment.MID, opad);
 		tooltip.addPara("Ship System Cooldown: %s\nSupplies Per Month: %s",
@@ -190,26 +156,23 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 				KheUtilities.lazyKheGetMultString(ACCELERATION_MULT + (ACCELERATION_MULT_PER_SYNERGY * synergyLevel))
 		);
 		if (synergyLevel >= 2) {
-			tooltip.addPara("Weapon Repair Time: %s",
-					opad, bad,
-					KheUtilities.lazyKheGetMultString(WEAPON_REPAIR_TIME_STALL)
+			tooltip.addPara("Weapons: %s",
+					opad, bad, "Disabled"
 			);
 		} else {
-			tooltip.addPara("Flux Dissipation: %s\nWeapon Repair Time: %s",
+			tooltip.addPara("Flux Dissipation: %s\nWeapons: %s",
 					opad, bad,
-					KheUtilities.lazyKheGetMultString(SYSTEM_FLUX_DISSIPATION_PENALTY),
-					KheUtilities.lazyKheGetMultString(WEAPON_REPAIR_TIME_STALL)
+					KheUtilities.lazyKheGetMultString(SYSTEM_FLUX_DISSIPATION_PENALTY), "Disabled"
 			);
 		}
 		tooltip.addSectionHeading("Burn Drive Overload Stats", Alignment.MID, opad);
 		if (synergyLevel > 1) {
-			tooltip.addPara("Subsystem Harmonization: %s\nWeapon Repair Time: %s\nEngine Repair Time: %s",
-					opad, good, "No Overload", "Instant", "Instant"
+			tooltip.addPara("Subsystem Harmonization: %s\nEngine Repair Time: %s",
+					opad, good, "No Overload", "Instant"
 			);
 		} else {
-			tooltip.addPara("Weapon Repair Time: %s\nEngine Repair Time",
+			tooltip.addPara("Engine Repair Time: %s",
 					opad, good,
-					KheUtilities.lazyKheGetMultString(WEAPON_REPAIR_TIME_OVERLOAD),
 					KheUtilities.lazyKheGetMultString(ENGINE_REPAIR_TIME_OVERLOAD)
 			);
 			tooltip.addPara("Flux Dissipation: %s",
@@ -221,73 +184,11 @@ public class KheLightwaveDriveSubsystem extends BaseHullMod {
 
 	@Override
 	public boolean isApplicableToShip(ShipAPI ship) {
-		if (ship == null) {
-			return false;
-		}
-		if (ship.getSystem() == null) {
-			return false;
-		}
-		if (!KheUtilities.stringArrayContains(acceptedSystemIDs, ship.getSystem().getId())) {
-			return false;
-		}
-		ShipAPI.HullSize size = ship.getHullSize();
-		if ((size != ShipAPI.HullSize.FRIGATE) && (size != ShipAPI.HullSize.DESTROYER)) {
-			return false;
-		}
-		if (ship.getMass() >= 1000f) {
-			return false;
-		}
-		if (KheUtilities.isPhaseShip(ship, true, true, false)) {
-			return false;
-		}
-		if (KheUtilities.isShielded(ship, true, false)) {
-			return false;
-		}
-		return super.isApplicableToShip(ship);
+		return applicableResolve(ship, acceptedSystemIDs);
 	}
 
 	@Override
 	public String getUnapplicableReason(ShipAPI ship) {
-		if (ship == null) {
-			return null;
-		}
-		if (ship.getSystem() == null) {
-			return "Ship has no shipsystem. READ THE MODDING GUIDELINES ON THE FORUM.";
-		}
-		if (!KheUtilities.stringArrayContains(acceptedSystemIDs, ship.getSystem().getId())) {
-			return "Ship does not have Burn Drive.";
-		}
-		ShipAPI.HullSize size = ship.getHullSize();
-		if ((size != ShipAPI.HullSize.FRIGATE) && (size != ShipAPI.HullSize.DESTROYER)) {
-			return "Can only be installed on Frigates or Destroyers.";
-		}
-		if (ship.getMass() >= 1000f) {
-			return "Ship has too much mass.";
-		}
-		//too unbalanced otherwise...
-		boolean isPhase = KheUtilities.isPhaseShip(ship, true, true, true);
-		boolean isShielded = KheUtilities.isShielded(ship, true, false);
-		if (isPhase) {
-			return "Cannot be installed on phase ships or ships with a damper field.";
-		} else if (isShielded) {
-			return "Cannot be installed on ships with shields.";
-		}
-		return null;
-	}
-
-	@Override
-	public boolean canBeAddedOrRemovedNow(ShipAPI ship, MarketAPI marketOrNull, CampaignUIAPI.CoreUITradeMode mode) {
-		if (KheUtilities.isThisRatsExoship(marketOrNull)) {
-			return false;
-		}
-		return super.canBeAddedOrRemovedNow(ship, marketOrNull, mode);
-	}
-
-	@Override
-	public String getCanNotBeInstalledNowReason(ShipAPI ship, MarketAPI marketOrNull, CampaignUIAPI.CoreUITradeMode mode) {
-		if (KheUtilities.isThisRatsExoship(marketOrNull)) {
-			return KheUtilities.RATSEXOSHIPNOREMOVALSTRING;
-		}
-		return super.getCanNotBeInstalledNowReason(ship, marketOrNull, mode);
+		return getUnapplicableReasonResolve(ship, acceptedSystemIDs);
 	}
 }
