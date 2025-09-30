@@ -698,4 +698,26 @@ public class KheUtilities {
 		}
 		return 1 + ((input - 1) * (1 / (float) Math.sqrt(scalar)));
 	}
+
+	public static void setForceNoFireOneFrame(ShipAPI ship) {
+		for (WeaponAPI weapon : ship.getAllWeapons()) {
+			weapon.setForceNoFireOneFrame(true);
+		}
+	}
+
+	public static void safeRepairAllWeapons(ShipAPI ship) {
+		for (WeaponAPI weapon : ship.getAllWeapons()) {
+			if (weapon.isDisabled() && (!weapon.isPermanentlyDisabled()) && (!weapon.isForceDisabled())) {
+				weapon.repair();
+			}
+		}
+	}
+
+	public static void safeRepairAllEngines(ShipAPI ship) {
+		for (ShipEngineControllerAPI.ShipEngineAPI engine : ship.getEngineController().getShipEngines()) {
+			if (engine.isDisabled() && (!engine.isPermanentlyDisabled())) {
+				engine.repair();
+			}
+		}
+	}
 }
