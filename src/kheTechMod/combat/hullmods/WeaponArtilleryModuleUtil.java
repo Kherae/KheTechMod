@@ -153,18 +153,9 @@ public class WeaponArtilleryModuleUtil extends BaseHullMod {
 		}
 	}
 
-	public static class ArtilleryModuleRangeModifier implements WeaponRangeModifier {
-		public final float rangebonus;
-		public final List<WeaponAPI.WeaponType> validtypes;
-		public final List<WeaponAPI.WeaponSize> validsizes;
-		public final boolean isBeam;
-
-		public ArtilleryModuleRangeModifier(float rangebonus, List<WeaponAPI.WeaponType> validtypes, List<WeaponAPI.WeaponSize> validsizes, boolean isBeam) {
-			this.rangebonus = rangebonus;
-			this.validtypes = validtypes;
-			this.validsizes = validsizes;
-			this.isBeam = isBeam;
-		}
+	public record ArtilleryModuleRangeModifier(float rangebonus, List<WeaponAPI.WeaponType> validtypes,
+											   List<WeaponAPI.WeaponSize> validsizes,
+											   boolean isBeam) implements WeaponRangeModifier {
 
 		public float getWeaponRangePercentMod(ShipAPI ship, WeaponAPI weapon) {
 			return 0;
