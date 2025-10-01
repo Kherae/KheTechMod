@@ -1,11 +1,8 @@
 package kheTechMod.combat.hullmods;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.BaseHullMod;
-import com.fs.starfarer.api.combat.MutableShipStatsAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
-import com.fs.starfarer.api.combat.ShipCommand;
 import com.fs.starfarer.api.combat.ShipSystemAPI.SystemState;
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
 import com.fs.starfarer.api.combat.listeners.HullDamageAboutToBeTakenListener;
@@ -46,6 +43,9 @@ public class KhePhaseAnchor extends BaseHullMod {
 		}
 
 		public boolean notifyAboutToTakeHullDamage(Object param, ShipAPI ship, Vector2f point, float damageAmount) {
+			//be on the safe side.
+			ShipSystemAPI cloak = ship.getPhaseCloak();
+			if(cloak==null){return false;}
 			if (!emergencyDive) {
 				float depCost = 0f;
 				if (ship.getFleetMember() != null) {
@@ -71,9 +71,12 @@ public class KhePhaseAnchor extends BaseHullMod {
 		}
 
 		public void advance(float amount) {
+			//be on the safe side.
+			ShipSystemAPI cloak = ship.getPhaseCloak();
+			if(cloak==null){return;}
 			if (emergencyDive) {
 				boolean lastForceFlag = false;
-				Color c = ship.getPhaseCloak().getSpecAPI().getEffectColor2();
+				Color c = cloak.getSpecAPI().getEffectColor2();
 				c = Misc.setAlpha(c, 255);
 				c = Misc.interpolateColor(c, Color.white, 0.5f);
 
@@ -94,9 +97,9 @@ public class KhePhaseAnchor extends BaseHullMod {
 				ship.setRetreating(true, false);
 
 				ship.blockCommandForOneFrame(ShipCommand.USE_SYSTEM);
-				diveProgress += amount * ship.getPhaseCloak().getChargeUpDur();
+				diveProgress += amount * cloak.getChargeUpDur();
 				float curr = ship.getExtraAlphaMult();
-				ship.getPhaseCloak().forceState(SystemState.IN, Math.min(1f, Math.max(curr, diveProgress)));
+				cloak.forceState(SystemState.IN, Math.min(1f, Math.max(curr, diveProgress)));
 				ship.getMutableStats().getHullDamageTakenMult().modifyMult(id, 0f);
 
 				if (diveProgress >= 1f) {

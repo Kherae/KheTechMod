@@ -51,16 +51,17 @@ public class PhaseHack extends BaseHullMod {
 	public void advanceInCombat(ShipAPI ship, float amount) {
 		super.advanceInCombat(ship, amount);
 		if (!ship.isAlive()) return;
+		//be on the safe side.
+		ShipSystemAPI cloak = ship.getPhaseCloak();
+		if(cloak==null){return;}
 
 		ship.blockCommandForOneFrame(ShipCommand.TOGGLE_SHIELD_OR_PHASE_CLOAK);
 		ship.blockCommandForOneFrame(ShipCommand.VENT_FLUX);
 
 		if (!ship.getFluxTracker().isOverloadedOrVenting()) {
 			ship.getFluxTracker().increaseFlux(ship.getFluxTracker().getMaxFlux() * FLUXPERCENTPERSECOND * amount, true);
-			if (ship.getPhaseCloak() != null) {
-				if (!ship.getPhaseCloak().isOn()) {
-					ship.getPhaseCloak().forceState(ShipSystemAPI.SystemState.IN, 1f);
-				}
+			if (!cloak.isOn()) {
+				cloak.forceState(ShipSystemAPI.SystemState.IN, 1f);
 			}
 		} else {
 			if (ship.getFluxLevel() >= 0.90) {

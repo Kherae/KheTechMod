@@ -30,6 +30,7 @@ public class ShieldHack extends BaseHullMod {
 	public void advanceInCombat(ShipAPI ship, float amount) {
 		super.advanceInCombat(ship, amount);
 		if (!ship.isAlive()) return;
+		if(ship.getShield()==null){return;}//safety
 		ship.blockCommandForOneFrame(ShipCommand.TOGGLE_SHIELD_OR_PHASE_CLOAK);
 		//ship.blockCommandForOneFrame(ShipCommand.VENT_FLUX);
 
