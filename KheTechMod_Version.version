@@ -4,8 +4,8 @@
     "modVersion": {
         "major": 1,
         "minor": 1,
-        "patch": 0
+        "patch": 1
     },
     "modThreadId": 33869,
-    "directDownloadURL": "https://github.com/Kherae/KheTechMod/archive/refs/tags/v1.1.0.zip"
+    "directDownloadURL": "https://github.com/Kherae/khetechmod/releases/latest/download/KheTechMod.zip"
 }
